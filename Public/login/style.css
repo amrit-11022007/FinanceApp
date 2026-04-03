@@ -1,0 +1,111 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: radial-gradient(circle at top left, #2e2e2e, #111111); /* Darker Apple-style background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  color: white;
+  overflow: hidden;
+}
+
+/* 1. New Container for Perspective */
+.card-container {
+  perspective: 1200px;
+  width: 340px;
+}
+
+/* 2. Liquid Glass Card Styling */
+.card {
+  position: relative;
+  width: 100%;
+  height: 400px; /* Dynamic height is still handled by JS */
+  transform-style: preserve-3d;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), height 0.5s ease;
+  cursor: default;
+}
+
+.card.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-front, .card-back {
+  position: absolute;
+  inset: 0;
+  padding: 30px;
+  backface-visibility: hidden;
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  /* Liquid Glass Effect */
+  background: rgba(255, 255, 255, 0.05);
+  -webkit-backdrop-filter: blur(25px) saturate(180%);
+  backdrop-filter: blur(25px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 
+              inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.card-back {
+  transform: rotateY(180deg);
+}
+
+/* Form Styling Improvements */
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+  width: 100%;
+  padding: 14px;
+  margin: 10px 0;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: white;
+  font-size: 15px;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+input:focus {
+  outline: none;
+  background: rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.05);
+}
+
+input[type="submit"] {
+  width: 100%;
+  padding: 14px;
+  margin-top: 10px;
+  background: #ffffff; /* Contrast button */
+  border: none;
+  border-radius: 12px;
+  color: #000;
+  font-weight: 600;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: transform 0.2s;
+}
+
+input[type="submit"]:hover {
+  transform: scale(1.02);
+  background: #f0f0f0;
+}
+
+span {
+  display: block;
+  text-align: center;
+  margin-top: 15px;
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+span a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+}

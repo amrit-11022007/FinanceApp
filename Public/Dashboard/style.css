@@ -1,0 +1,248 @@
+/* --- Base Reset & Theme Variables --- */
+:root {
+    --accent: #38BDF8; /* The Sky Blue */
+    --accent-glow: rgba(56, 189, 248, 0.3);
+    --glass-bg: rgba(15, 23, 42, 0.6); 
+    --glass-border: rgba(56, 189, 248, 0.2);
+    --bg-dark: #020617; /* Deep Navy */
+}
+/* --- Golden Scrollbar Styling --- */
+
+/* 1. The entire scrollbar width */
+::-webkit-scrollbar {
+    width: 10px;               /* Vertical scrollbar width */
+    height: 10px;              /* Horizontal scrollbar height */
+    background: #000;          /* Background of the scrollbar area */
+}
+
+/* 2. The Track (The "path" the thumb slides on) */
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05); /* Very subtle glass effect */
+    border-left: 1px solid rgba(212, 175, 55, 0.1); /* Faint accent border */
+}
+
+/* 3. The Thumb (The draggable part) */
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--accent) 0%, #8A6D3B 100%); /* Gold gradient */
+    border-radius: 10px;
+    border: 2px solid #000;   /* Creates a gap effect around the thumb */
+    box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.3); /* Subtle shine */
+}
+
+/* 4. Thumb on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #FFD700 0%, var(--accent) 100%); /* Brighter accent */
+    cursor: pointer;
+}
+
+/* --- Firefox Support --- */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent) #000; /* thumb color | track color */
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--bg-dark);
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #fff;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* --- Navigation --- */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 5%;
+    background: rgba(0, 0, 0, 0.8);
+    -webkit-backdrop-filter: blur(15px);
+    backdrop-filter: blur(15px);
+    border-bottom: 1px solid var(--glass-border);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+nav .logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px var(--accent-glow);
+}
+nav .circular-profile {
+    width: 40px;
+    height: 40px;
+    background: var(--accent);
+    border-radius: 50%;
+    color: #000;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 10px var(--accent-glow);
+    cursor: pointer;
+}
+.nav-list {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+}
+
+.nav-list a {
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    transition: 0.3s;
+}
+
+.nav-list a:hover {
+    color: var(--accent);
+}
+
+nav span:first-child { /* Hamburger Icon */
+    display: none;
+    font-size: 1.8rem;
+    color: var(--accent);
+    cursor: pointer;
+}
+
+/* --- Layout Container --- */
+.container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+/* Glassmorphism Card Style */
+aside, .overview > div {
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    backdrop-filter: blur(20px) saturate(150%);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+}
+
+aside:hover, .overview > div:hover {
+    border-color: var(--accent);
+    transform: translateY(-5px);
+}
+
+/* --- Section 1: Expense Summary --- */
+.expense-summary {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.expense-summary aside {
+    flex: 1;
+    text-align: center;
+}
+
+.expense-summary h6 {
+    color: var(--accent-color);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+    opacity: 0.8;
+}
+
+.expense-summary .amount {
+    font-size: 2rem;
+    font-weight: 300;
+}
+
+.expense-summary .amount::before {
+    content: '$';
+    font-size: 1rem;
+    margin-right: 4px;
+    color: var(--accent);
+}
+
+.transaction-title {
+    font-weight: 500;
+    opacity: 0.8;
+    overflow-x: auto;
+}
+
+/* --- Section 2: Overview Grid --- */
+.overview {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 Columns */
+    grid-template-rows: repeat(3, 300px);   /* 3 Rows */
+    gap: 1.5rem;
+}
+
+/* Placeholder styles for content inside overview blocks */
+.overview ul { list-style: none; }
+.overview li {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.overview .logo {
+    width: 30px;
+    height: 30px;
+    background: var(--accent);
+    border-radius: 50%;
+    opacity: 0.2;
+}
+
+/* Chart Placeholders */
+.pie-chart-recent, .bar-chart-expenses, .pie-chart-income {
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+    position: relative;
+}
+
+.active {
+    color: var(--accent);
+}
+
+/* --- Responsive Adjustments (Phone Screen) --- */
+@media (max-width: 768px) {
+    /* Navbar becomes Sidebar logic */
+    nav .nav-list {
+        position: fixed;
+        left: -100%;
+        top: 0;
+        flex-direction: column;
+        background: rgba(0, 0, 0, 0.95);
+        width: 250px;
+        height: 100vh;
+        padding: 5rem 2rem;
+        transition: 0.4s ease;
+        border-right: 1px solid var(--accent);
+    }
+
+    nav span:first-child {
+        display: block; /* Show hamburger */
+    }
+
+    /* Change Layouts to Single Column */
+    .expense-summary {
+        flex-direction: column;
+    }
+
+    .overview {
+        grid-template-columns: 1fr; /* Single column */
+        grid-template-rows: auto;
+    }
+
+    .overview > div {
+        min-height: 250px;
+    }
+}

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <nav>
+      <span>&#8801;</span>
+      <span class="logo">FinTrac</span>
+      <ul class="nav-list">
+        <li><a href="#" class="active">Dashboard</a></li>
+        <li><a href="#">Income</a></li>
+        <li><a href="#">Expenses</a></li>
+        <li><a href="#">Settings</a></li>
+      </ul>
+      <button class="circular-profile" id="dashboard-profile-icon">F</button>
+    </nav>
+    <div class="container">
+      <section class="expense-summary">
+        <aside>
+          <h6>Income</h6>
+          <br /><span class="amount">2000</span>
+        </aside>
+        <aside>
+          <h6>Expenses</h6>
+          <br /><span class="amount">1000</span>
+        </aside>
+        <aside>
+          <h6>Savings</h6>
+          <br /><span class="amount">1000</span>
+        </aside>
+      </section>
+      <section class="overview">
+        <div class="recent-transaction">
+          <ul>
+            <li>
+              <div class="logo"></div>
+              <span class="transaction-title">Shopping</span
+              ><span class="amount">-500</span>
+            </li>
+            <li>
+              <div class="logo"></div>
+              <span class="transaction-title">Salary</span
+              ><span class="amount">50000</span>
+            </li>
+            <li>
+              <div class="logo"></div>
+              <span class="transaction-title">Groceries</span
+              ><span class="amount">-200</span>
+            </li>
+            <li>
+              <div class="logo"></div>
+              <span class="transaction-title">Entertainment</span
+              ><span class="amount">-100</span>
+            </li>
+            <li>
+              <div class="logo"></div>
+              <span class="transaction-title">Travel</span
+              ><span class="amount">-1000</span>
+            </li>
+            <li>
+              <div class="logo"></div>
+              <span class="transaction-title">Miscellaneous</span
+              ><span class="amount">-3000</span>
+            </li>
+          </ul>
+        </div>
+        <div class="pie-chart-recent"></div>
+        <div class="expenses">
+          <ul>
+            <li>
+              <div class="logo"></div>
+              <span class="expense-title"></span><span class="amount"></span>
+            </li>
+            <li>
+              <div class="logo"></div>
+              <span class="expense-title"></span><span class="amount"></span>
+            </li>
+            <li>
+              <div class="logo"></div>
+              <span class="expense-title"></span><span class="amount"></span>
+            </li>
+            <li>
+              <div class="logo"></div>
+              <span class="expense-title"></span><span class="amount"></span>
+            </li>
+          </ul>
+        </div>
+        <div class="bar-chart-expenses"></div>
+        <div class="pie-chart-income"></div>
+        <div class="income">
+          <ul>
+            <li>
+              <div class="logo"></div>
+              <span class="income-title"></span><span class="amount"></span>
+            </li>
+            <li>
+              <div class="logo"></div>
+              <span class="income-title"></span><span class="amount"></span>
+            </li>
+            <li>
+              <div class="logo"></div>
+              <span class="income-title"></span><span class="amount"></span>
+            </li>
+            <li>
+              <div class="logo"></div>
+              <span class="income-title"></span><span class="amount"></span>
+            </li>
+          </ul>
+        </div>
+      </section>
+    </div>
+  </body>
+  <script src="dashboard.js"></script>
+</html>
