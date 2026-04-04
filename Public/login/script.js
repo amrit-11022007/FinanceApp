@@ -14,9 +14,11 @@ loginForm.addEventListener("submit", async (e) => {
   const data = await res.json();
   document.getElementById("email").value = "";
   document.getElementById("password").value = "";
-  if (res.ok) {
+  if (res.ok && data.success) {
     localStorage.setItem("token", data.token);
     window.location.href = "../Dashboard/dashboard.html";
+  } else {
+    alert(data.message || "Login failed");
   }
 });
 
@@ -35,9 +37,11 @@ registerForm.addEventListener("submit", async (e) => {
   document.getElementById("name").value = "";
   document.getElementById("regEmail").value = "";
   document.getElementById("regPassword").value = "";
-  if (res.ok) {
+  if (res.ok && data.success) {
     localStorage.setItem("token", data.token);
     window.location.href = "../Dashboard/dashboard.html";
+  } else {
+    alert(data.message || "Registration failed");
   }
 });
 

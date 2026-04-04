@@ -10,14 +10,12 @@ export const requireAuth = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
     req.user = decoded;
-    console.log(token);
-    console.log(process.env.JWT_SECRET_KEY);
+    // console.log(process.env.JWT_SECRET_KEY);
 
     next();
   } catch (err) {
-    console.log(token);
-    console.log(process.env.JWT_SECRET_KEY);
+    // console.log(process.env.JWT_SECRET_KEY);
 
-    return res.json({ error: "Invalid or expired token" });
+    return res.status(401).json({ error: "Invalid or expired token" })
   }
 };

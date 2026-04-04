@@ -29,9 +29,13 @@ export const authLogin = async (req, res) => {
     if (rows.length > 0) {
       const isValid = await bcrypt.compare(password.trim(), rows[0].password);
       if (isValid) {
-        const token = jwt.sign({ mail: email }, process.env.JWT_SECRET_KEY, {
-          expiresIn: "7d",
-        });
+        const token = jwt.sign(
+          { user_id: rows[0].user_id, email: rows[0].email },
+          process.env.JWT_SECRET_KEY,
+          {
+            expiresIn: "7d",
+          },
+        );
         return res.json({
           token,
           name: rows[0].name,
@@ -66,12 +70,16 @@ export const authRegister = async (req, res) => {
       [name.trim(), email.trim(), hashedPassword],
     );
     if (rows.affectedRows > 0) {
-      const token = jwt.sign({ mail: email }, process.env.JWT_SECRET_KEY, {
-        expiresIn: "7d",
-      });
+      const token = jwt.sign(
+        { user_id: rows.insertId, email: email.trim() },
+        process.env.JWT_SECRET_KEY,
+        {
+          expiresIn: "7d",
+        },
+      );
       return res.json({
         token,
-        name: name,
+        name: name.trim(),
         success: true,
         message: "Registration Successful",
       });
@@ -89,12 +97,34 @@ export const authRegister = async (req, res) => {
 };
 
 export const authMe = async (req, res) => {
-  const [rows] = await pool.query(
-    "SELECT name, email FROM users WHERE email = ?",
-    [req.user.mail],
-  );
-  if (rows.length === 0) {
-    return res.status(404).json({ error: "User not found" });
+  try {
+    const [rows] = await pool.query(
+      "SELECT user_id, name, email FROM users WHERE email = ?",
+      [req.user.email]
+    );
+    if (!rows[0]) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.json(rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
   }
-  res.json(rows[0]);
+};
+
+export const transactionData = async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      `SELECT u.user_id, t.category_id, t.amount, t.type, t.date, c.name, c.icon 
+       FROM transactions t 
+       INNER JOIN categories c ON t.category_id = c.category_id 
+       INNER JOIN users u ON t.user_id = u.user_id 
+       WHERE u.user_id = ?`,
+      [req.user.user_id]
+    );
+    res.json(rows); // empty array is valid, no 404
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
 };

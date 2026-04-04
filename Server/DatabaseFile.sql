@@ -1,5 +1,3 @@
-use finance_tracker;
-
 CREATE TABLE users (
 user_id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
 name VARCHAR(100) NOT NULL,
@@ -8,9 +6,6 @@ password VARCHAR(255) NOT NULL,
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-select * from users;
-
-insert into users (name, email, password) values ("Amrit", "rajamrit4a09@gmail.com", "testing");
 
 CREATE TABLE categories (
   category_id  INT AUTO_INCREMENT PRIMARY KEY,
@@ -62,6 +57,3 @@ INSERT INTO categories (user_id, name, type, icon) VALUES
   (NULL, 'Education',     'expense', '📚'),
   (NULL, 'Other Expense', 'expense', '📦');
 
-select * from categories;
-
-SELECT name, email FROM users WHERE email = 'rajamrit4a09@gmail.com';
