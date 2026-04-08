@@ -1,329 +1,534 @@
-/* --- Base Reset & Theme Variables --- */
-:root {
-  --accent: #38bdf8; /* The Sky Blue */
-  --accent-glow: rgba(56, 189, 248, 0.3);
-  --glass-bg: rgba(15, 23, 42, 0.6);
-  --glass-border: rgba(56, 189, 248, 0.2);
-  --bg-dark: #020617; /* Deep Navy */
-}
-/* --- Golden Scrollbar Styling --- */
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;500;600;700;800&display=swap');
 
-/* 1. The entire scrollbar width */
-::-webkit-scrollbar {
-  width: 10px; /* Vertical scrollbar width */
-  height: 10px; /* Horizontal scrollbar height */
-  background: #000; /* Background of the scrollbar area */
-}
-
-/* 2. The Track (The "path" the thumb slides on) */
-::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05); /* Very subtle glass effect */
-  border-left: 1px solid rgba(212, 175, 55, 0.1); /* Faint accent border */
-}
-
-/* 3. The Thumb (The draggable part) */
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(
-    180deg,
-    var(--accent) 0%,
-    #8a6d3b 100%
-  ); /* Gold gradient */
-  border-radius: 10px;
-  border: 2px solid #000; /* Creates a gap effect around the thumb */
-  box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.3); /* Subtle shine */
-}
-
-/* 4. Thumb on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(
-    180deg,
-    #ffd700 0%,
-    var(--accent) 100%
-  ); /* Brighter accent */
-  cursor: pointer;
-}
-
-/* --- Firefox Support --- */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: var(--accent) #000; /* thumb color | track color */
-}
-* {
+/* ─── Reset & Base ─────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
-body {
-  background: var(--bg-dark);
-  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  color: #fff;
-  min-height: 100vh;
+:root {
+  --accent: #38bdf8;
+  --accent-glow: rgba(56, 189, 248, 0.3);
+  --accent-dim: rgba(56, 189, 248, 0.12);
+  --glass-bg: rgba(15, 23, 42, 0.6);
+  --glass-border: rgba(56, 189, 248, 0.2);
+  --bg-dark: #020617;
+  --bg-mid: #0a1628;
+  --bg-card: rgba(10, 22, 40, 0.8);
+  --text-primary: #e2f0ff;
+  --text-muted: rgba(148, 185, 220, 0.6);
+  --text-dim: rgba(100, 140, 180, 0.5);
+  --nav-width: 220px;
+  --radius: 14px;
+  --radius-sm: 8px;
+  --income-color: #4ade80;
+  --expense-color: #f87171;
+}
+
+html, body {
+  height: 100%;
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  font-family: 'Syne', sans-serif;
   overflow-x: hidden;
 }
 
-/* --- Navigation --- */
+body {
+  min-height: 100vh;
+  background-image:
+    radial-gradient(ellipse 60% 40% at 70% 10%, rgba(56, 189, 248, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 50% at 10% 80%, rgba(56, 189, 248, 0.04) 0%, transparent 60%);
+}
+
+/* ─── Scrollbar ─────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 2px; }
+* { scrollbar-width: thin; scrollbar-color: var(--glass-border) transparent; }
+
+/* ─── Nav / Sidebar ─────────────────────────────────────────── */
 nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 5%;
-  background: rgba(0, 0, 0, 0.8);
-  -webkit-backdrop-filter: blur(15px);
-  backdrop-filter: blur(15px);
-  border-bottom: 1px solid var(--glass-border);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
-nav .logo {
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: var(--accent);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  text-shadow: 0 0 10px var(--accent-glow);
-}
-nav .circular-profile {
-  width: 40px;
-  height: 40px;
-  background: var(--accent);
-  border-radius: 50%;
-  color: #000;
-  font-weight: bold;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 0 10px var(--accent-glow);
-  cursor: pointer;
-  font-size: 20px;
-  font-family: "Times New Roman", Times, serif;
-}
-.nav-list {
-  display: flex;
-  list-style: none;
-  gap: 2rem;
-}
-
-.nav-list a {
-  text-decoration: none;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.9rem;
-  transition: 0.3s;
-}
-
-.nav-list a:hover {
-  color: var(--accent);
-}
-
-nav span:first-child {
-  /* Hamburger Icon */
-  display: none;
-  font-size: 1.8rem;
-  color: var(--accent);
-  cursor: pointer;
-}
-
-/* --- Layout Container --- */
-.container {
-  max-width: 1200px;
-  margin: 2rem auto;
-  padding: 0 1rem;
-}
-
-/* Glassmorphism Card Style */
-aside,
-.overview > div {
+  position: fixed;
+  top: 0; left: 0;
+  width: var(--nav-width);
+  height: 100vh;
   background: var(--glass-bg);
-  -webkit-backdrop-filter: blur(20px) saturate(150%);
-  backdrop-filter: blur(20px) saturate(150%);
-  border: 1px solid var(--glass-border);
-  border-radius: 20px;
-  padding: 1.5rem;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
-  transition: transform 0.3s ease;
-  overflow-y: auto;
-}
-
-aside:hover,
-.overview > div:hover {
-  border-color: var(--accent);
-  transform: translateY(-5px);
-}
-
-/* --- Section 1: Expense Summary --- */
-.expense-summary {
+  border-right: 1px solid var(--glass-border);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
   display: flex;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 28px 16px;
+  gap: 8px;
+  z-index: 100;
+  overflow: hidden;
+}
+
+nav::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(180deg, rgba(56, 189, 248, 0.04) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+nav > span:first-child {
+  display: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: var(--text-muted);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  transition: color 0.2s;
+  align-self: flex-end;
+}
+
+nav > span:first-child:hover { color: var(--accent); }
+
+.logo {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  text-shadow: 0 0 24px var(--accent-glow);
+  padding: 8px 10px 20px;
+  width: 100%;
+  border-bottom: 1px solid var(--glass-border);
+  margin-bottom: 12px;
+  white-space: nowrap;
+}
+
+.nav-list {
+  list-style: none;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.nav-list li a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-list li a::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 50%;
+  transform: translateY(-50%);
+  width: 3px; height: 0;
+  background: var(--accent);
+  border-radius: 0 2px 2px 0;
+  transition: height 0.2s ease;
+}
+
+.nav-list li a:hover,
+.nav-list li a.active {
+  color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.nav-list li a:hover::before,
+.nav-list li a.active::before {
+  height: 60%;
+}
+
+.circular-profile {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent) 0%, #0ea5e9 100%);
+  border: none;
+  color: var(--bg-dark);
+  font-size: 14px;
+  font-weight: 700;
+  font-family: 'Syne', sans-serif;
+  cursor: pointer;
+  margin-top: auto;
+  margin-left: 10px;
+  box-shadow: 0 0 16px var(--accent-glow);
+  transition: box-shadow 0.2s, transform 0.2s;
+  flex-shrink: 0;
+}
+
+.circular-profile:hover {
+  box-shadow: 0 0 28px var(--accent-glow);
+  transform: scale(1.05);
+}
+
+/* ─── Main Container ────────────────────────────────────────── */
+.container {
+  margin-left: var(--nav-width);
+  width: calc(100vw - var(--nav-width));
+  padding: 40px 36px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  min-height: 100vh;
+}
+
+/* ─── Summary Cards ─────────────────────────────────────────── */
+.expense-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
 }
 
 .expense-summary aside {
-  flex: 1;
-  text-align: center;
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 24px 28px;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  animation: fadeUp 0.4s ease both;
+}
+
+.expense-summary aside:nth-child(1) { animation-delay: 0.05s; }
+.expense-summary aside:nth-child(2) { animation-delay: 0.1s; }
+.expense-summary aside:nth-child(3) { animation-delay: 0.15s; }
+
+.expense-summary aside::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
+}
+
+.expense-summary aside:hover {
+  border-color: rgba(56, 189, 248, 0.4);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
 }
 
 .expense-summary h6 {
-  color: var(--accent-color);
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 0.5rem;
-  opacity: 0.8;
+  color: var(--text-dim);
+  margin-bottom: 12px;
 }
 
 .expense-summary .amount {
-  font-size: 2rem;
-  font-weight: 300;
+  font-family: 'DM Mono', monospace;
+  font-size: 28px;
+  font-weight: 500;
+  color: var(--text-primary);
+  display: block;
 }
 
 .expense-summary .amount::before {
-  content: "$";
-  font-size: 1rem;
-  margin-right: 4px;
+  content: '$';
+  font-size: 14px;
   color: var(--accent);
+  margin-right: 4px;
+  vertical-align: middle;
 }
 
-.transaction-title {
-  font-weight: 500;
-  opacity: 0.8;
-  overflow-x: auto;
-}
+/* Colour-code each card's amount */
+#total-income  { color: var(--income-color);  text-shadow: 0 0 12px rgba(74, 222, 128, 0.3); }
+#total-expense { color: var(--expense-color); text-shadow: 0 0 12px rgba(248, 113, 113, 0.3); }
+#total-saving  { color: var(--accent);        text-shadow: 0 0 12px var(--accent-glow); }
 
-/* --- Section 2: Overview Grid --- */
+/* ─── Overview Grid ─────────────────────────────────────────── */
 .overview {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 2 Columns */
-  grid-template-rows: repeat(3, 300px); /* 3 Rows */
-  gap: 1.5rem;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+  gap: 16px;
 }
 
-/* Placeholder styles for content inside overview blocks */
+/* Every card in overview */
+.overview > div {
+  background: var(--bg-card);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 24px;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  position: relative;
+  overflow: auto;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  animation: fadeUp 0.4s ease both;
+}
+
+.overview > div::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
+}
+
+.overview > div:hover {
+  border-color: rgba(56, 189, 248, 0.35);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+}
+
+/* Section headings inside cards */
+.overview h1 {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-family: 'DM Mono', monospace;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+/* Transaction / list cards — scrollable */
+.recent-transaction,
+.expenses,
+.income {
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+/* ─── Transaction List Items ────────────────────────────────── */
 .overview ul {
   list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
+
 .overview li {
   display: flex;
-  justify-content: space-between;
-  padding: 0.8rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s;
+}
+
+.overview li:hover {
+  background: var(--accent-dim);
 }
 
 .overview .logo {
-  width: 30px;
-  height: 30px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid var(--glass-border);
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
 }
 
-.pie-chart-recent {
-  position: relative;
+.transaction-title {
+  flex: 1;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.overview li .amount {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Colour amounts by sign — add these classes in JS */
+.amount-income  { color: var(--income-color); }
+.amount-expense { color: var(--expense-color); }
+
+/* ─── Chart Cards ───────────────────────────────────────────── */
+.pie-chart-recent,
+.pie-chart-expenses,
+.pie-chart-income {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .chart-container {
-  width: 200px;
-  height: 200px;
+  width: min(220px, 100%);
+  height: 220px;
   position: relative;
 }
-.chart-container canvas {
-  max-width: 100%;
-  max-height: 100%;
+
+.chart-container canvas,
+.pie-chart-expenses canvas,
+.pie-chart-income canvas {
+  width: 100% !important;
+  height: 100% !important;
 }
 
-/* Chart Placeholders
-.pie-chart-recent,
-.bar-chart-expenses,
-.pie-chart-income {
-  background: radial-gradient(
-    circle,
-    rgba(212, 175, 55, 0.1) 0%,
-    transparent 70%
-  );
-  position: relative;
-} */
-
-.active {
-  color: var(--accent);
-}
+/* ─── Error Overlay ─────────────────────────────────────────── */
 .overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  height: 100dvh;
-  width: 100dvw;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.8);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(0, 0, 0, 0.8);
-  z-index: 1000;
+  z-index: 500;
 }
 
-.overlay .failure {
-  background-color: var(--accent);
-  height: 400px;
-  width: 400px;
-  border-radius: 8px;
-  color: var(--bg-dark);
+.overlay.hidden { display: none; }
+
+.failure {
+  background: var(--bg-mid);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 48px 40px;
+  width: min(400px, 92vw);
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 1.5rem;
+  gap: 16px;
+  text-align: center;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6);
+  position: relative;
+  overflow: hidden;
+}
+
+.failure::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(248, 113, 113, 0.6), transparent);
 }
 
 .excla {
-  color: red;
-  font-size: 32px;
-  font-weight: bolder;
-  height: 40px;
-  width: 40px;
-  border: 3px solid red;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
+  border: 2px solid var(--expense-color);
+  color: var(--expense-color);
+  font-size: 22px;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 0 16px rgba(248, 113, 113, 0.3);
 }
 
-.hidden {
-  display: none;
+.failure p {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: var(--text-primary);
+  line-height: 1.6;
 }
 
-/* --- Responsive Adjustments (Phone Screen) --- */
+.failure span:last-child {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ─── Animations ────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Responsive ────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  /* Navbar becomes Sidebar logic */
-  nav .nav-list {
+  nav {
     position: fixed;
-    left: -100%;
-    top: 0;
+    top: 0; left: 0;
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    align-items: center;
+    padding: 12px 16px;
+    border-right: none;
+    border-bottom: 1px solid var(--glass-border);
+    gap: 12px;
+    flex-wrap: wrap;
+    overflow: visible;
+  }
+
+  nav > span:first-child {
+    display: block;
+    order: 3;
+    margin-left: auto;
+  }
+
+  .logo {
+    order: 1;
+    border-bottom: none;
+    padding: 0 0 0 4px;
+    margin-bottom: 0;
+    font-size: 18px;
+  }
+
+  .circular-profile {
+    order: 2;
+    margin: 0 0 0 auto;
+  }
+
+  .nav-list {
+    display: none;
+    order: 4;
     flex-direction: column;
-    background: rgba(0, 0, 0, 0.95);
-    width: 250px;
-    height: 100vh;
-    padding: 5rem 2rem;
-    transition: 0.4s ease;
-    border-right: 1px solid var(--accent);
+    width: 100%;
+    padding: 8px 0 4px;
+    border-top: 1px solid var(--glass-border);
+    gap: 2px;
   }
 
-  nav span:first-child {
-    display: block; /* Show hamburger */
+  nav.nav-open .nav-list { display: flex; }
+
+  .container {
+    margin-left: 0;
+    width: 100%;
+    padding: 88px 16px 40px;
+    gap: 16px;
   }
 
-  /* Change Layouts to Single Column */
   .expense-summary {
-    flex-direction: column;
+    grid-template-columns: 1fr;
   }
 
   .overview {
-    grid-template-columns: 1fr; /* Single column */
-    grid-template-rows: auto;
+    grid-template-columns: 1fr;
   }
 
-  .overview > div {
-    min-height: 250px;
+  .expense-summary .amount {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 80px 12px 32px;
   }
 }

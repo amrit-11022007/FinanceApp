@@ -7,6 +7,18 @@ let userName = "";
 let userEmail = "";
 let transactions = [];
 
+// ─── Hamburger toggle ────────────────────────────────────────
+document.querySelector("nav > span:first-child").addEventListener("click", () => {
+  document.querySelector("nav").classList.toggle("nav-open");
+});
+
+// ─── Chart.js global dark defaults ──────────────────────────
+Chart.defaults.color = "rgba(148, 185, 220, 0.6)";
+Chart.defaults.borderColor = "rgba(56, 189, 248, 0.1)";
+Chart.defaults.font.family = "'DM Mono', monospace";
+Chart.defaults.font.size = 11;
+
+// ─── Fetch user ──────────────────────────────────────────────
 async function getData() {
   try {
     const res = await fetch("http://localhost:5000/me", {
@@ -17,19 +29,16 @@ async function getData() {
       },
     });
     const data = await res.json();
-    if (!res.ok) {
-      throw new Error(
-        data.message || data.error || "Failed to fetch user data",
-      );
-    }
+    if (!res.ok) throw new Error(data.message || data.error || "Failed to fetch user data");
     userName = data.name;
     userEmail = data.email;
-    profileIcon.innerText = userName[0];
+    profileIcon.innerText = userName[0].toUpperCase();
   } catch (err) {
-    showError(err);
+    showError(err.message || err);
   }
 }
 
+// ─── Fetch transactions ──────────────────────────────────────
 async function getTransactionData() {
   try {
     const res = await fetch("http://localhost:5000/transactions", {
@@ -40,11 +49,7 @@ async function getTransactionData() {
       },
     });
     const data = await res.json();
-    if (!res.ok) {
-      throw new Error(
-        data.message || data.error || "Failed to fetch transactions",
-      );
-    }
+    if (!res.ok) throw new Error(data.message || data.error || "Failed to fetch transactions");
     transactions = data;
     renderList("transaction-list", transactions, "all");
     renderList("expense-list", transactions, "expense");
@@ -56,46 +61,47 @@ async function getTransactionData() {
     renderCategoryChart(transactions, "expense-bar-chart");
     renderCategoryChart(transactions, "income-bar-chart");
   } catch (err) {
-    showError(err);
+    showError(err.message || err);
   }
 }
 
+// ─── Render list ─────────────────────────────────────────────
 function renderList(ulId, transactions, listType) {
-  const renderList = document.getElementById(ulId);
-  renderList.innerHTML = "";
-  let arr = [];
-  if (listType === "all") {
-    arr = transactions;
-  } else if (listType === "expense") {
-    arr = transactions.filter((t) => t.type === "expense");
-  } else {
-    arr = transactions.filter((t) => t.type === "income");
-  }
+  const ul = document.getElementById(ulId);
+  ul.innerHTML = "";
+
+  let arr = transactions;
+  if (listType === "expense") arr = transactions.filter((t) => t.type === "expense");
+  else if (listType === "income") arr = transactions.filter((t) => t.type === "income");
+
   arr.forEach((item) => {
+    const isExpense = item.type === "expense";
+    const sign = isExpense ? "−" : "+";
+    const amountClass = isExpense ? "amount-expense" : "amount-income";
+
     const li = document.createElement("li");
     li.innerHTML = `
-    <div class="logo">${item.icon}</div>
-    <span class="transaction-title">${item.name}</span>
-    <span class="amount">${item.type === "expense" ? -item.amount : item.amount}</span>
-  `;
-    renderList.appendChild(li);
+      <div class="logo">${item.icon ?? "💰"}</div>
+      <span class="transaction-title">${item.name}</span>
+      <span class="amount ${amountClass}">${sign}$${Number(item.amount).toLocaleString()}</span>
+    `;
+    ul.appendChild(li);
   });
 }
 
+// ─── Totals ──────────────────────────────────────────────────
 function renderTotalIncome(transactions) {
   const total = transactions
     .filter((t) => t.type === "income")
     .reduce((acc, t) => acc + Number(t.amount), 0);
-
-  document.getElementById("total-income").innerText = total;
+  document.getElementById("total-income").innerText = total.toLocaleString();
 }
 
 function renderTotalExpenses(transactions) {
   const total = transactions
     .filter((t) => t.type === "expense")
     .reduce((acc, t) => acc + Number(t.amount), 0);
-
-  document.getElementById("total-expense").innerText = total;
+  document.getElementById("total-expense").innerText = total.toLocaleString();
 }
 
 function renderTotalSavings(transactions) {
@@ -105,15 +111,10 @@ function renderTotalSavings(transactions) {
   const expenses = transactions
     .filter((t) => t.type === "expense")
     .reduce((acc, t) => acc + Number(t.amount), 0);
-  const saving = income - expenses;
-  document.getElementById("total-saving").innerText = saving;
+  document.getElementById("total-saving").innerText = (income - expenses).toLocaleString();
 }
 
-function showError(message) {
-  disablePage.classList.remove("hidden");
-  document.body.style.overflow = "hidden";
-  failureText.innerText = message;
-}
+// ─── Pie chart ───────────────────────────────────────────────
 let pieChartInstance = null;
 
 function renderPieChart(transactions) {
@@ -125,65 +126,98 @@ function renderPieChart(transactions) {
     .reduce((sum, t) => sum + Number(t.amount), 0);
   const saving = income - expense;
 
-  const ctx = document.getElementById("expense-pie-chart").getContext("2d");
+  if (pieChartInstance) pieChartInstance.destroy();
 
-  if (pieChartInstance) {
-    pieChartInstance.destroy();
-  }
-
-  pieChartInstance = new Chart(ctx, {
-    type: "pie",
-    data: {
-      labels: ["Expense", "Saving"],
-      datasets: [
-        {
+  pieChartInstance = new Chart(
+    document.getElementById("expense-pie-chart").getContext("2d"),
+    {
+      type: "pie",
+      data: {
+        labels: ["Expense", "Saving"],
+        datasets: [{
           data: [expense, saving],
           backgroundColor: ["#f87171", "#4ade80"],
+          borderColor: "rgba(10, 22, 40, 0.8)",
+          borderWidth: 2,
+        }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            labels: {
+              color: "rgba(148, 185, 220, 0.7)",
+              font: { family: "'DM Mono', monospace", size: 11 },
+              boxWidth: 10,
+              padding: 14,
+            },
+          },
         },
-      ],
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-    },
-  });
+      },
+    }
+  );
 }
+
+// ─── Bar chart ───────────────────────────────────────────────
 function renderCategoryChart(transactions, id) {
-  let expenses = "";
-  let label = "";
-  let color = "";
-  if (id.startsWith("expense")) {
-    expenses = transactions.filter((t) => t.type === "expense");
-    label = "Spending by category";
-    color = '#f87171'
+  const isExpense = id.startsWith("expense");
+  const filtered = transactions.filter((t) => t.type === (isExpense ? "expense" : "income"));
+  const label = isExpense ? "Spending by category" : "Income by category";
+  const color = isExpense ? "rgba(248, 113, 113, 0.75)" : "rgba(74, 222, 128, 0.75)";
+  const borderColor = isExpense ? "#f87171" : "#4ade80";
 
-  } else {
-    expenses = transactions.filter((t) => t.type === "income");
-    label = "Income by category";
-    color = '#4ade80'
-  }
-
-  // group by category name and sum amounts
-  const categoryTotals = expenses.reduce((acc, t) => {
+  const categoryTotals = filtered.reduce((acc, t) => {
     acc[t.name] = (acc[t.name] || 0) + Number(t.amount);
     return acc;
   }, {});
 
-  const ctx = document.getElementById(id).getContext("2d");
-  new Chart(ctx, {
+  new Chart(document.getElementById(id).getContext("2d"), {
     type: "bar",
     data: {
       labels: Object.keys(categoryTotals),
-      datasets: [
-        {
-          label: label,
-          data: Object.values(categoryTotals),
-          backgroundColor: color,
+      datasets: [{
+        label,
+        data: Object.values(categoryTotals),
+        backgroundColor: color,
+        borderColor: borderColor,
+        borderWidth: 1,
+        borderRadius: 6,
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          labels: {
+            color: "rgba(148, 185, 220, 0.7)",
+            font: { family: "'DM Mono', monospace", size: 11 },
+          },
         },
-      ],
+      },
+      scales: {
+        x: {
+          ticks: { color: "rgba(148, 185, 220, 0.5)" },
+          grid: { color: "rgba(56, 189, 248, 0.06)" },
+        },
+        y: {
+          ticks: { color: "rgba(148, 185, 220, 0.5)" },
+          grid: { color: "rgba(56, 189, 248, 0.06)" },
+        },
+      },
     },
   });
 }
+
+// ─── Error display ───────────────────────────────────────────
+function showError(message) {
+  disablePage.classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+  failureText.innerText = message;
+}
+
+// ─── Init ────────────────────────────────────────────────────
 if (!token) {
   window.location.href = "../login/index.html";
 } else {

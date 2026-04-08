@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Income</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+      <span>&#8801;</span>
+      <span class="logo">FinTrac</span>
+      <ul class="nav-list">
+        <li><a href="../Dashboard/dashboard.html">Dashboard</a></li>
+        <li><a href="../Income/income.html" class="active">Income</a></li>
+        <li><a href="../Expenses/expenses.html">Expenses</a></li>
+        <li><a href="../Settings/settings.html">Settings</a></li>
+      </ul>
+      <button class="circular-profile" id="dashboard-profile-icon">F</button>
+    </nav>
+    <section class="income-overview">
+        <header><span class="header-text">Know your earning over time.</span><button type="button" class="add-income-btn">+ Add Income</button></header>
+        <div class="chart">
+            <canvas id="overview-chart"></canvas>
+        </div>
+    </section>
+    <section class="income-source-list">
+        <header class="income-source-header">
+            <span class="header-text">Your income sources.</span>
+            <button type="button">Download</button>
+        </header>
+        <ul id="income-list"></ul>
+    </section>
+    <div class="income-dailogue-box">
+        <div class="income-dailogue-content">
+            <h2>Add Income</h2>
+            <form id="income-form">
+                <label for="source">Income Source:</label>
+                <input type="text" id="source" name="source" required>
+                <label for="amount">Amount:</label>
+                <input type="number" id="amount" name="amount" required>
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date" required>
+                <button type="submit">Add</button>
+                <button type="button" id="cancel-btn">Cancel</button>
+            </form>
+        </div>
+    </div>
+</body>
+<script src="income.js"></script>
+</html>
