@@ -26,10 +26,6 @@ async function getData() {
     userEmail = data.email;
     profileIcon.innerText = userName[0];
   } catch (err) {
-    // disablePage.classList.remove("hidden");
-    // document.body.style.overflow = "hidden";
-    // console.error(err);
-    // failureText.innerText = err.message;
     showError(err);
   }
 }
@@ -50,30 +46,39 @@ async function getTransactionData() {
       );
     }
     transactions = data;
-    renderTransactionList(transactions);
+    renderList("transaction-list", transactions, "all");
+    renderList("expense-list", transactions, "expense");
+    renderList("income-list", transactions, "income");
     renderTotalIncome(transactions);
     renderTotalExpenses(transactions);
     renderTotalSavings(transactions);
     renderPieChart(transactions);
-    renderCategoryChart(transactions);
+    renderCategoryChart(transactions, "expense-bar-chart");
+    renderCategoryChart(transactions, "income-bar-chart");
   } catch (err) {
     showError(err);
   }
 }
 
-function renderTransactionList(transactions) {
-  const transactionList = document.getElementById("transaction-list");
-  transactionList.innerHTML = "";
-  transactions.forEach((item) => {
+function renderList(ulId, transactions, listType) {
+  const renderList = document.getElementById(ulId);
+  renderList.innerHTML = "";
+  let arr = [];
+  if (listType === "all") {
+    arr = transactions;
+  } else if (listType === "expense") {
+    arr = transactions.filter((t) => t.type === "expense");
+  } else {
+    arr = transactions.filter((t) => t.type === "income");
+  }
+  arr.forEach((item) => {
     const li = document.createElement("li");
-    const amountText =
-      item.type === "expense" ? `-${item.amount}` : `+${item.amount}`;
     li.innerHTML = `
     <div class="logo">${item.icon}</div>
     <span class="transaction-title">${item.name}</span>
-    <span class="amount">${amountText}</span>
+    <span class="amount">${item.type === "expense" ? -item.amount : item.amount}</span>
   `;
-    transactionList.appendChild(li);
+    renderList.appendChild(li);
   });
 }
 
@@ -94,14 +99,14 @@ function renderTotalExpenses(transactions) {
 }
 
 function renderTotalSavings(transactions) {
-const income = transactions
+  const income = transactions
     .filter((t) => t.type === "income")
     .reduce((acc, t) => acc + Number(t.amount), 0);
-const expenses = transactions
+  const expenses = transactions
     .filter((t) => t.type === "expense")
     .reduce((acc, t) => acc + Number(t.amount), 0);
-const saving = income - expenses;
-document.getElementById("total-saving").innerText = saving;
+  const saving = income - expenses;
+  document.getElementById("total-saving").innerText = saving;
 }
 
 function showError(message) {
@@ -130,19 +135,33 @@ function renderPieChart(transactions) {
     type: "pie",
     data: {
       labels: ["Expense", "Saving"],
-      datasets: [{
-        data: [expense, saving],
-        backgroundColor: ["#f87171", "#4ade80"],
-      }]
+      datasets: [
+        {
+          data: [expense, saving],
+          backgroundColor: ["#f87171", "#4ade80"],
+        },
+      ],
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
-    }
+    },
   });
 }
-function renderCategoryChart(transactions) {
-  const expenses = transactions.filter((t) => t.type === "expense");
+function renderCategoryChart(transactions, id) {
+  let expenses = "";
+  let label = "";
+  let color = "";
+  if (id.startsWith("expense")) {
+    expenses = transactions.filter((t) => t.type === "expense");
+    label = "Spending by category";
+    color = '#f87171'
+
+  } else {
+    expenses = transactions.filter((t) => t.type === "income");
+    label = "Income by category";
+    color = '#4ade80'
+  }
 
   // group by category name and sum amounts
   const categoryTotals = expenses.reduce((acc, t) => {
@@ -150,17 +169,19 @@ function renderCategoryChart(transactions) {
     return acc;
   }, {});
 
-  const ctx = document.getElementById("category-bar-chart").getContext("2d");
+  const ctx = document.getElementById(id).getContext("2d");
   new Chart(ctx, {
     type: "bar",
     data: {
       labels: Object.keys(categoryTotals),
-      datasets: [{
-        label: "Spending by Category",
-        data: Object.values(categoryTotals),
-        backgroundColor: "#f87171",
-      }]
-    }
+      datasets: [
+        {
+          label: label,
+          data: Object.values(categoryTotals),
+          backgroundColor: color,
+        },
+      ],
+    },
   });
 }
 if (!token) {
