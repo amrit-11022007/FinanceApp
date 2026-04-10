@@ -122,9 +122,38 @@ export const transactionData = async (req, res) => {
        WHERE u.user_id = ?`,
       [req.user.user_id]
     );
-    res.json(rows); // empty array is valid, no 404
+    res.json(rows);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Server error" });
   }
 };
+export const addTransaction = async (req, res) => {
+  try {
+    const { amount, date, type } = req.body;
+    let categoryId = null;
+    switch (type) {
+      case "salary":
+        categoryId = 1;
+        break;
+      case "freelance":
+        categoryId = 2;
+        break;
+      case "other":
+        categoryId = 3;
+        break;
+    
+      default:
+        break;
+    }
+
+    await pool.query(
+      'INSERT INTO transactions (user_id, category_id, amount, date) VALUES (?, ?, ?, ?)',
+      [req.user.user_id, categoryId, amount, date]
+    );
+    res.json({ success: true, message: "Transaction added succesfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+}
