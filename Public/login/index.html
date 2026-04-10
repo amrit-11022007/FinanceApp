@@ -3,67 +3,120 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login</title>
+    <title>FinTrac — Sign In</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="card-container">
-      <!-- Added this wrapper -->
-      <div class="card">
-        <div class="card-front">
-          <form id="loginForm">
-            <h2>Welcome back</h2>
-            <input
-              type="email"
-              id="email"
-              placeholder="Email"
-              autocomplete="off"
-            />
-            <input
-              type="password"
-              id="password"
-              placeholder="Password"
-              required
-            />
-            <input type="submit" value="Sign In" />
-            <span
-              >New User? <a href="#" id="registerLink">Create account</a></span
-            >
+    <div class="bg-grid"></div>
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+
+    <main class="page-layout">
+
+      <!-- ── Left: Auth card ── -->
+      <section class="auth-section">
+        <div class="brand">
+          <span class="brand-logo">FinTrac</span>
+          <span class="brand-tagline">Your money, clearly.</span>
+        </div>
+
+        <div class="auth-card">
+          <!-- Tab switcher -->
+          <div class="auth-tabs">
+            <button class="tab-btn active" id="tab-login">Sign In</button>
+            <button class="tab-btn" id="tab-register">Create Account</button>
+          </div>
+
+          <!-- Login form -->
+          <form id="loginForm" class="auth-form active">
+            <div class="field">
+              <label for="email">Email</label>
+              <input type="email" id="email" placeholder="you@example.com" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label for="password">Password</label>
+              <div class="password-wrap">
+                <input type="password" id="password" placeholder="••••••••" required />
+                <button type="button" class="eye-btn" data-target="password" aria-label="Toggle password">
+                  <svg class="eye-icon eye-show" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <svg class="eye-icon eye-hide" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                </button>
+              </div>
+            </div>
+            <button type="submit" class="submit-btn">Sign In</button>
+            <p class="switch-text">New here? <a href="#" id="registerLink">Create account</a></p>
+          </form>
+
+          <!-- Register form -->
+          <form id="registerForm" class="auth-form">
+            <div class="field">
+              <label for="name">Full Name</label>
+              <input type="text" id="name" placeholder="John Doe" autocomplete="off" required />
+            </div>
+            <div class="field">
+              <label for="regEmail">Email</label>
+              <input type="email" id="regEmail" placeholder="you@example.com" autocomplete="off" required />
+            </div>
+            <div class="field">
+              <label for="regPassword">Password</label>
+              <div class="password-wrap">
+                <input type="password" id="regPassword" placeholder="••••••••" required />
+                <button type="button" class="eye-btn" data-target="regPassword" aria-label="Toggle password">
+                  <svg class="eye-icon eye-show" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <svg class="eye-icon eye-hide" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                </button>
+              </div>
+            </div>
+            <button type="submit" class="submit-btn">Create Account</button>
+            <p class="switch-text">Already have an account? <a href="#" id="loginLink">Sign In</a></p>
           </form>
         </div>
-        <div class="card-back">
-          <form id="registerForm">
-            <h2>Create Account</h2>
-            <input
-              type="text"
-              id="name"
-              placeholder="Full Name"
-              autocomplete="off"
-              required
-            />
-            <input
-              type="email"
-              id="regEmail"
-              placeholder="Email"
-              autocomplete="off"
-              required
-            />
-            <input
-              type="password"
-              id="regPassword"
-              placeholder="Password"
-              required
-            />
-            <input type="submit" value="Register" />
-            <span
-              >Already have an account?
-              <a href="#" id="loginLink">Sign In</a></span
-            >
-          </form>
+      </section>
+
+      <!-- ── Right: Feature showcase ── -->
+      <aside class="feature-aside">
+        <div class="features-slider">
+          <div class="slides-track" id="slidesTrack">
+
+            <div class="slide">
+              <div class="slide-icon">📊</div>
+              <h3>Visual Dashboard</h3>
+              <p>See your entire financial picture at a glance — income, expenses, and savings rendered as clean charts updated in real time.</p>
+            </div>
+
+            <div class="slide">
+              <div class="slide-icon">💸</div>
+              <h3>Expense Tracking</h3>
+              <p>Log and categorise every expense. From groceries to subscriptions, know exactly where your money goes each month.</p>
+            </div>
+
+            <div class="slide">
+              <div class="slide-icon">📈</div>
+              <h3>Income Insights</h3>
+              <p>Track multiple income streams side by side. Salary, freelance, investments — all in one place with trend analysis.</p>
+            </div>
+
+            <div class="slide">
+              <div class="slide-icon">🔒</div>
+              <h3>Secure & Private</h3>
+              <p>JWT-authenticated sessions keep your data yours. No ads, no third-party sharing — just a clean, private finance tracker.</p>
+            </div>
+
+          </div>
+
+          <!-- Pagination dots -->
+          <div class="slide-dots" id="slideDots"></div>
+
+          <!-- Arrows -->
+          <div class="slide-arrows">
+            <button class="arrow-btn" id="prevSlide" aria-label="Previous">&#8592;</button>
+            <button class="arrow-btn" id="nextSlide" aria-label="Next">&#8594;</button>
+          </div>
         </div>
-      </div>
-    </div>
-    <!-- <p id="id"></p> -->
+      </aside>
+
+    </main>
+
+    <script src="script.js"></script>
   </body>
-  <script src="script.js"></script>
 </html>

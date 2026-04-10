@@ -1,11 +1,58 @@
+// ─── Tab switching ───────────────────────────────────────────
+const tabLogin = document.getElementById("tab-login");
+const tabRegister = document.getElementById("tab-register");
 const loginForm = document.getElementById("loginForm");
 const registerForm = document.getElementById("registerForm");
-const card = document.querySelector(".card");
 
+function showLogin() {
+  tabLogin.classList.add("active");
+  tabRegister.classList.remove("active");
+  loginForm.classList.add("active");
+  registerForm.classList.remove("active");
+}
+
+function showRegister() {
+  tabRegister.classList.add("active");
+  tabLogin.classList.remove("active");
+  registerForm.classList.add("active");
+  loginForm.classList.remove("active");
+}
+
+tabLogin.addEventListener("click", showLogin);
+tabRegister.addEventListener("click", showRegister);
+document.getElementById("registerLink").addEventListener("click", (e) => {
+  e.preventDefault();
+  showRegister();
+});
+document.getElementById("loginLink").addEventListener("click", (e) => {
+  e.preventDefault();
+  showLogin();
+});
+
+// ─── Eye toggle ──────────────────────────────────────────────
+document.querySelectorAll(".eye-btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const input = document.getElementById(btn.dataset.target);
+    const showIcon = btn.querySelector(".eye-show");
+    const hideIcon = btn.querySelector(".eye-hide");
+    if (input.type === "password") {
+      input.type = "text";
+      showIcon.style.display = "none";
+      hideIcon.style.display = "block";
+    } else {
+      input.type = "password";
+      showIcon.style.display = "block";
+      hideIcon.style.display = "none";
+    }
+  });
+});
+
+// ─── Login submit ─────────────────────────────────────────────
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
+
   const res = await fetch("http://localhost:5000/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -14,6 +61,7 @@ loginForm.addEventListener("submit", async (e) => {
   const data = await res.json();
   document.getElementById("email").value = "";
   document.getElementById("password").value = "";
+
   if (res.ok && data.success) {
     localStorage.setItem("token", data.token);
     window.location.href = "../Dashboard/dashboard.html";
@@ -22,6 +70,7 @@ loginForm.addEventListener("submit", async (e) => {
   }
 });
 
+// ─── Register submit ──────────────────────────────────────────
 registerForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const name = document.getElementById("name").value;
@@ -37,6 +86,7 @@ registerForm.addEventListener("submit", async (e) => {
   document.getElementById("name").value = "";
   document.getElementById("regEmail").value = "";
   document.getElementById("regPassword").value = "";
+
   if (res.ok && data.success) {
     localStorage.setItem("token", data.token);
     window.location.href = "../Dashboard/dashboard.html";
@@ -45,41 +95,42 @@ registerForm.addEventListener("submit", async (e) => {
   }
 });
 
-function setCardHeight() {
-  const card = document.querySelector(".card");
-  const front = document.querySelector(".card-front");
-  const back = document.querySelector(".card-back");
+// ─── Slider ───────────────────────────────────────────────────
+const slides = document.querySelectorAll(".slide");
+const dotsContainer = document.getElementById("slideDots");
+let current = 0;
+let autoTimer;
 
-  // Measure the actual form height inside the hidden/visible faces
-  const activeFace = card.classList.contains("flipped") ? back : front;
-  const height = activeFace.offsetHeight;
+// Build dots
+slides.forEach((_, i) => {
+  const dot = document.createElement("button");
+  dot.className = "dot" + (i === 0 ? " active" : "");
+  dot.setAttribute("aria-label", `Slide ${i + 1}`);
+  dot.addEventListener("click", () => goTo(i));
+  dotsContainer.appendChild(dot);
+});
 
-  card.style.height = `${height}px`;
+function goTo(index) {
+  slides[current].classList.remove("active");
+  dotsContainer.children[current].classList.remove("active");
+  current = (index + slides.length) % slides.length;
+  slides[current].classList.add("active");
+  dotsContainer.children[current].classList.add("active");
+  resetAuto();
 }
 
-// Call this inside your flip functions
-const flipToBack = () => {
-  card.classList.add("flipped");
-  setCardHeight(); // Update height for the back content
-};
+document
+  .getElementById("nextSlide")
+  .addEventListener("click", () => goTo(current + 1));
+document
+  .getElementById("prevSlide")
+  .addEventListener("click", () => goTo(current - 1));
 
-const flipToFront = () => {
-  card.classList.remove("flipped");
-  setCardHeight(); // Update height for the front content
-};
+function resetAuto() {
+  clearInterval(autoTimer);
+  autoTimer = setInterval(() => goTo(current + 1), 4000);
+}
 
-document.getElementById("registerLink").addEventListener("click", (e) => {
-  e.preventDefault();
-  flipToBack();
-});
-
-document.getElementById("loginLink").addEventListener("click", (e) => {
-  e.preventDefault();
-  flipToFront();
-});
-
-// ensure height is correct when form elements change
-["name", "regEmail", "regPassword", "email", "password"].forEach((id) => {
-  const el = document.getElementById(id);
-  if (el) el.addEventListener("input", setCardHeight);
-});
+// Init
+slides[0].classList.add("active");
+resetAuto();

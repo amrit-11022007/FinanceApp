@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expenses</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav>
+    <span>&#8801;</span>
+    <span class="logo">FinTrac</span>
+    <ul class="nav-list">
+      <li><a href="../Dashboard/dashboard.html">Dashboard</a></li>
+      <li><a href="../Income/income.html">Income</a></li>
+      <li><a href="#" class="active">Expenses</a></li>
+      <li><a href="../Settings/settings.html">Settings</a></li>
+    </ul>
+    <button class="circular-profile" id="expense-profile-icon">F</button>
+  </nav>
+
+  <!-- Overview + Chart -->
+  <section class="expense-overview">
+    <header>
+      <span class="header-text">Track where your money goes.</span>
+      <button type="button" class="add-expense-btn">+ Add Expense</button>
+    </header>
+    <div class="chart">
+      <canvas id="overview-chart"></canvas>
+    </div>
+  </section>
+
+  <!-- Expense list -->
+  <section class="expense-source-list">
+    <header class="expense-source-header">
+      <span class="header-text">Your expenses.</span>
+      <button type="button" id="download-btn">Download</button>
+    </header>
+    <ul id="expense-list"></ul>
+  </section>
+
+  <!-- Add Expense Modal -->
+  <div class="expense-dialogue-box">
+    <div class="expense-dialogue-content">
+      <h2>Add Expense</h2>
+      <form id="expense-form">
+        <label for="category">Category:</label>
+        <select id="category" name="type">
+          <option value="food">Food</option>
+          <option value="transport">Transport</option>
+          <option value="housing">Housing</option>
+          <option value="health">Health</option>
+          <option value="entertainment">Entertainment</option>
+          <option value="shopping">Shopping</option>
+          <option value="other expenses">Other</option>
+        </select>
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" name="amount" min="0" step="0.01" required />
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" required />
+        <button type="submit">Add</button>
+        <button type="button" id="cancel-btn">Cancel</button>
+      </form>
+    </div>
+  </div>
+  <div class="overlay hidden" id="overlay">
+      <div class="failure">
+        <span class="excla">!</span>
+        <p id="failureId"></p>
+        <span>Try Again Later</span>
+      </div>
+    </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="expenses.js"></script>
+</body>
+</html>

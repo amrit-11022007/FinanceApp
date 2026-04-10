@@ -20,9 +20,13 @@
   --text-muted: rgba(148, 185, 220, 0.6);
   --text-dim: rgba(100, 140, 180, 0.5);
   --nav-width: 220px;
-  --nav-collapsed: 60px;
   --radius: 14px;
   --radius-sm: 8px;
+  /* Expense accent — red */
+  --exp: #f87171;
+  --exp-glow: rgba(248, 113, 113, 0.3);
+  --exp-dim: rgba(248, 113, 113, 0.1);
+  --exp-border: rgba(248, 113, 113, 0.25);
 }
 
 html, body {
@@ -39,8 +43,8 @@ body {
   grid-template-rows: auto;
   min-height: 100vh;
   background-image:
-    radial-gradient(ellipse 60% 40% at 70% 10%, rgba(56, 189, 248, 0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 50% at 10% 80%, rgba(56, 189, 248, 0.04) 0%, transparent 60%);
+    radial-gradient(ellipse 60% 40% at 70% 10%, rgba(248, 113, 113, 0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 50% at 10% 80%, rgba(56, 189, 248, 0.03) 0%, transparent 60%);
 }
 
 /* ─── Scrollbar ─────────────────────────────────────────────── */
@@ -66,7 +70,6 @@ nav {
   gap: 8px;
   z-index: 100;
   overflow: hidden;
-  transition: width 0.3s ease;
 }
 
 nav::before {
@@ -78,7 +81,6 @@ nav::before {
   pointer-events: none;
 }
 
-/* Hamburger toggle — visible only on small screens */
 nav > span:first-child {
   display: none;
   font-size: 22px;
@@ -176,19 +178,20 @@ nav > span:first-child:hover { color: var(--accent); }
   transform: scale(1.05);
 }
 
-/* ─── Main Content Area ─────────────────────────────────────── */
+/* ─── Main Content ───────────────────────────────────────────── */
 body > section,
-body > div:not(.income-dailogue-box) {
+body > div:not(.expense-dialogue-box) {
   grid-column: 2;
 }
 
-.income-overview,
-.income-source-list {
+.expense-overview,
+.expense-source-list {
+  margin-left: var(--nav-width);
   padding: 32px 36px;
 }
 
-/* ─── Income Overview ───────────────────────────────────────── */
-.income-overview {
+/* ─── Overview Section ──────────────────────────────────────── */
+.expense-overview {
   padding-top: 40px;
   padding-bottom: 16px;
   min-height: 55vh;
@@ -197,7 +200,7 @@ body > div:not(.income-dailogue-box) {
   gap: 24px;
 }
 
-.income-overview header {
+.expense-overview header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -212,10 +215,10 @@ body > div:not(.income-dailogue-box) {
   line-height: 1.2;
 }
 
-.add-income-btn {
+.add-expense-btn {
   background: transparent;
-  border: 1px solid var(--accent);
-  color: var(--accent);
+  border: 1px solid var(--exp);
+  color: var(--exp);
   font-family: 'Syne', sans-serif;
   font-size: 13px;
   font-weight: 600;
@@ -225,13 +228,12 @@ body > div:not(.income-dailogue-box) {
   cursor: pointer;
   transition: all 0.25s ease;
   white-space: nowrap;
-  box-shadow: 0 0 0 transparent;
 }
 
-.add-income-btn:hover {
-  background: var(--accent);
+.add-expense-btn:hover {
+  background: var(--exp);
   color: var(--bg-dark);
-  box-shadow: 0 0 24px var(--accent-glow);
+  box-shadow: 0 0 24px var(--exp-glow);
 }
 
 .chart {
@@ -241,8 +243,8 @@ body > div:not(.income-dailogue-box) {
   border-radius: var(--radius);
   padding: 24px;
   position: relative;
-  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   overflow: hidden;
   min-height: 280px;
 }
@@ -252,7 +254,7 @@ body > div:not(.income-dailogue-box) {
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--accent-glow), transparent);
+  background: linear-gradient(90deg, transparent, var(--exp-glow), transparent);
 }
 
 .chart canvas {
@@ -260,20 +262,20 @@ body > div:not(.income-dailogue-box) {
   height: 100% !important;
 }
 
-/* ─── Income Source List ────────────────────────────────────── */
-.income-source-list {
+/* ─── Expense List Section ──────────────────────────────────── */
+.expense-source-list {
   padding-top: 16px;
   padding-bottom: 48px;
 }
 
-.income-source-header {
+.expense-source-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 20px;
 }
 
-.income-source-header button {
+.expense-source-header button {
   background: transparent;
   border: 1px solid var(--glass-border);
   color: var(--text-muted);
@@ -287,21 +289,20 @@ body > div:not(.income-dailogue-box) {
   transition: all 0.2s;
 }
 
-.income-source-header button:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: var(--accent-dim);
+.expense-source-header button:hover {
+  border-color: var(--exp);
+  color: var(--exp);
+  background: var(--exp-dim);
 }
 
-#income-list {
+#expense-list {
   list-style: none;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 14px;
 }
 
-/* Each income list item — populated via JS */
-#income-list li {
+#expense-list li {
   background: var(--bg-card);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius);
@@ -317,50 +318,66 @@ body > div:not(.income-dailogue-box) {
   overflow: hidden;
 }
 
-#income-list li::after {
+#expense-list li::after {
   content: '';
   position: absolute;
   bottom: 0; left: 0; right: 0;
   height: 2px;
-  background: linear-gradient(90deg, var(--accent), transparent);
+  background: linear-gradient(90deg, var(--exp), transparent);
   opacity: 0;
   transition: opacity 0.2s;
 }
 
-#income-list li:hover {
-  border-color: rgba(56, 189, 248, 0.4);
+#expense-list li:hover {
+  border-color: var(--exp-border);
   transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px var(--glass-border);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px var(--exp-border);
 }
 
-#income-list li:hover::after {
+#expense-list li:hover::after {
   opacity: 1;
 }
 
-#income-list .delete-item {
+#expense-list .delete-item {
   cursor: pointer;
   position: absolute;
   top: 30px;
   right: 20px;
 }
 
-/* Income source name — style suggestion for JS */
-.income-source-name {
+.expense-category {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-family: 'DM Mono', monospace;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--exp);
+  background: var(--exp-dim);
+  border: 1px solid var(--exp-border);
+  border-radius: 20px;
+  padding: 3px 10px;
+  width: fit-content;
+}
+
+.expense-description {
   font-size: 14px;
   font-weight: 600;
   color: var(--text-primary);
   letter-spacing: 0.01em;
 }
 
-.income-amount {
+.expense-amount {
   font-family: 'DM Mono', monospace;
   font-size: 20px;
   font-weight: 500;
-  color: var(--accent);
-  text-shadow: 0 0 12px var(--accent-glow);
+  color: var(--exp);
+  text-shadow: 0 0 12px var(--exp-glow);
 }
 
-.income-date {
+.expense-date {
   font-family: 'DM Mono', monospace;
   font-size: 11px;
   color: var(--text-dim);
@@ -368,45 +385,45 @@ body > div:not(.income-dailogue-box) {
   text-transform: uppercase;
 }
 
-/* ─── Dialogue / Modal ──────────────────────────────────────── */
-.income-dailogue-box {
+/* ─── Modal ─────────────────────────────────────────────────── */
+.expense-dialogue-box {
   display: none;
   position: fixed;
   inset: 0;
   background: rgba(2, 6, 23, 0.75);
-  -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   z-index: 200;
   align-items: center;
   justify-content: center;
 }
 
-.income-dailogue-box.open {
+.expense-dialogue-box.open {
   display: flex;
 }
 
-.income-dailogue-content {
+.expense-dialogue-content {
   background: var(--bg-mid);
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--exp-border);
   border-radius: var(--radius);
   padding: 36px 32px;
   width: min(440px, 92vw);
-  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px var(--glass-border);
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px var(--exp-border);
   animation: modalIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both;
   position: relative;
   overflow: hidden;
 }
 
-.income-dailogue-content::before {
+.expense-dialogue-content::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  background: linear-gradient(90deg, transparent, var(--exp), transparent);
   opacity: 0.6;
 }
 
-.income-dailogue-content h2 {
+.expense-dialogue-content h2 {
   font-size: 20px;
   font-weight: 700;
   color: var(--text-primary);
@@ -414,13 +431,13 @@ body > div:not(.income-dailogue-box) {
   letter-spacing: -0.01em;
 }
 
-#income-form {
+#expense-form {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-#income-form label {
+#expense-form label {
   font-size: 11px;
   font-family: 'DM Mono', monospace;
   letter-spacing: 0.08em;
@@ -429,33 +446,50 @@ body > div:not(.income-dailogue-box) {
   margin-top: 10px;
 }
 
-#income-form input {
-  background: rgba(56, 189, 248, 0.05);
-  border: 1px solid var(--glass-border);
+#expense-form input,
+#expense-form select {
+  background: rgba(248, 113, 113, 0.05);
+  border: 1px solid var(--exp-border);
   border-radius: var(--radius-sm);
   color: var(--text-primary);
   font-family: 'DM Mono', monospace;
   font-size: 14px;
   padding: 10px 14px;
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
   width: 100%;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
 }
 
-#income-form input:focus {
-  border-color: var(--accent);
-  background: rgba(56, 189, 248, 0.08);
-  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+#expense-form input:focus,
+#expense-form select:focus {
+  border-color: var(--exp);
+  background: rgba(248, 113, 113, 0.08);
+  box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.1);
 }
 
-#income-form input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(0.5) sepia(1) hue-rotate(180deg);
+#expense-form select {
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23f87171' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-color: rgba(248, 113, 113, 0.05);
+}
+
+#expense-form select option {
+  background: var(--bg-mid);
+  color: var(--text-primary);
+}
+
+#expense-form input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.5) sepia(1) hue-rotate(300deg) saturate(2);
   cursor: pointer;
 }
 
-#income-form button[type="submit"] {
+#expense-form button[type="submit"] {
   margin-top: 20px;
-  background: var(--accent);
+  background: var(--exp);
   border: none;
   border-radius: var(--radius-sm);
   color: var(--bg-dark);
@@ -465,46 +499,16 @@ body > div:not(.income-dailogue-box) {
   letter-spacing: 0.02em;
   padding: 12px;
   cursor: pointer;
-  transition: box-shadow 0.2s, opacity 0.2s, transform 0.15s;
+  transition: box-shadow 0.2s, transform 0.15s;
 }
 
-#income-form button[type="submit"]:hover {
-  box-shadow: 0 0 28px var(--accent-glow);
+#expense-form button[type="submit"]:hover {
+  box-shadow: 0 0 28px var(--exp-glow);
   transform: translateY(-1px);
 }
 
-#income-form button[type="submit"]:active {
+#expense-form button[type="submit"]:active {
   transform: translateY(0);
-}
-
-#income-form select {
-  background: rgba(56, 189, 248, 0.05);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-sm);
-  color: var(--text-primary);
-  font-family: 'DM Mono', monospace;
-  font-size: 14px;
-  padding: 10px 14px;
-  outline: none;
-  width: 100%;
-  cursor: pointer;
-  -webkit-appearance: none;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2338bdf8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 14px center;
-  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
-}
-
-#income-form select:focus {
-  border-color: var(--accent);
-  background-color: rgba(56, 189, 248, 0.08);
-  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
-}
-
-#income-form select option {
-  background: var(--bg-mid);
-  color: var(--text-primary);
 }
 
 #cancel-btn {
@@ -603,11 +607,9 @@ body > div:not(.income-dailogue-box) {
   to   { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-/* ─── Responsive: Sidebar → Top Navbar ─────────────────────── */
+/* ─── Responsive ────────────────────────────────────────────── */
 @media (max-width: 768px) {
-  body {
-    grid-template-columns: 1fr;
-  }
+  body { grid-template-columns: 1fr; }
 
   nav {
     position: fixed;
@@ -621,82 +623,66 @@ body > div:not(.income-dailogue-box) {
     border-bottom: 1px solid var(--glass-border);
     gap: 12px;
     flex-wrap: wrap;
+    overflow: visible;
   }
 
   nav > span:first-child {
     display: block;
-    margin-left: auto;
     order: 3;
+    margin-left: auto;
   }
 
   .logo {
+    order: 1;
     border-bottom: none;
     padding: 0 0 0 4px;
     margin-bottom: 0;
     font-size: 18px;
-    order: 1;
   }
 
   .circular-profile {
-    margin: 0;
     order: 2;
-    margin-left: auto;
+    margin: 0 0 0 auto;
   }
 
   .nav-list {
     display: none;
+    order: 4;
     flex-direction: column;
     width: 100%;
-    order: 4;
     padding: 8px 0 4px;
     border-top: 1px solid var(--glass-border);
     gap: 2px;
   }
 
-  .nav-list.open {
-    display: flex;
-  }
+  nav.nav-open .nav-list { display: flex; }
 
-  nav.nav-open .nav-list {
-    display: flex;
-  }
-
-  .income-overview,
-  .income-source-list {
+  .expense-overview,
+  .expense-source-list {
     margin-left: 0;
     padding: 24px 16px;
   }
 
-  .income-overview {
-    margin-top: 220px;
-  }
+  .expense-overview { padding-top: 88px; }
 
-  .header-text {
-    font-size: 18px;
-  }
+  .header-text { font-size: 18px; }
 
-  #income-list {
-    grid-template-columns: 1fr;
-  }
-  #income-list .delete-item {
-    top: 20px;
-  }
+  #expense-list { grid-template-columns: 1fr; }
+  #expense-list .delete-item{ top: 20px; }
 }
 
 @media (max-width: 480px) {
-  .income-overview header {
+  .expense-overview header {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .add-income-btn {
-    width: 100%;
-  }
+  .add-expense-btn { width: 100%; }
 }
 
 /* ─── Empty State ───────────────────────────────────────────── */
-#income-list:empty::after {
-  content: 'No income sources yet. Add one to get started.';
+#expense-list:empty::after {
+  content: 'No expenses yet. Add one to start tracking.';
   grid-column: 1 / -1;
   text-align: center;
   padding: 48px 24px;
@@ -704,6 +690,6 @@ body > div:not(.income-dailogue-box) {
   font-family: 'DM Mono', monospace;
   font-size: 13px;
   letter-spacing: 0.04em;
-  border: 1px dashed var(--glass-border);
+  border: 1px dashed var(--exp-border);
   border-radius: var(--radius);
 }

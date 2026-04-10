@@ -1,9 +1,6 @@
-const profileIcon = document.getElementById("dashboard-profile-icon");
-const disablePage = document.getElementById("overlay");
-const failureText = document.getElementById("failureId");
+const profileIcon = document.getElementById("expense-profile-icon");
 const token = localStorage.getItem("token");
-const addIncomeBtn = document.getElementById("add-income-btn");
-const form = document.getElementById("income-form");
+const form = document.getElementById("expense-form");
 
 let transactions = [];
 let chartInstance = null;
@@ -11,23 +8,25 @@ let chartInstance = null;
 let userName = "";
 let userEmail = "";
 
+// ─── Hamburger ───────────────────────────────────────────────
 document
   .querySelector("nav > span:first-child")
   .addEventListener("click", () => {
     document.querySelector("nav").classList.toggle("nav-open");
   });
 
-const dialogueBox = document.querySelector(".income-dailogue-box");
-const addBtn = document.querySelector(".add-income-btn");
+// ─── Modal ───────────────────────────────────────────────────
+const dialogueBox = document.querySelector(".expense-dialogue-box");
+const addBtn = document.querySelector(".add-expense-btn");
 const cancelBtn = document.getElementById("cancel-btn");
 
 addBtn.addEventListener("click", () => dialogueBox.classList.add("open"));
 cancelBtn.addEventListener("click", () => dialogueBox.classList.remove("open"));
-
 dialogueBox.addEventListener("click", (e) => {
   if (e.target === dialogueBox) dialogueBox.classList.remove("open");
 });
 
+// ─── Fetch user ──────────────────────────────────────────────
 async function getData() {
   try {
     const res = await fetch("http://localhost:5000/me", {
@@ -50,6 +49,7 @@ async function getData() {
   }
 }
 
+// ─── Form submit ─────────────────────────────────────────────
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const date = document.getElementById("date").value;
@@ -60,7 +60,6 @@ form.addEventListener("submit", async (e) => {
   }
   const formData = new FormData(form);
   const data = Object.fromEntries(formData.entries());
-
   await fetch("http://localhost:5000/transactions", {
     method: "POST",
     headers: {
@@ -76,6 +75,7 @@ form.addEventListener("submit", async (e) => {
     .then(getTransactionData);
 });
 
+// ─── Fetch transactions ──────────────────────────────────────
 async function getTransactionData() {
   try {
     const res = await fetch("http://localhost:5000/transactions", {
@@ -91,7 +91,7 @@ async function getTransactionData() {
         data.message || data.error || "Failed to fetch transactions",
       );
     transactions = data;
-    renderList("income-list", transactions, "income");
+    renderList("expense-list", transactions, "expense");
     renderCategoryChart(transactions, "overview-chart");
   } catch (err) {
     showError(err.message || err);
@@ -112,6 +112,7 @@ async function deleteData(id) {
   }
 }
 
+// ─── Render list ─────────────────────────────────────────────
 function renderList(ulId, transactions, listType) {
   const ul = document.getElementById(ulId);
   ul.innerHTML = "";
@@ -130,22 +131,25 @@ function renderList(ulId, transactions, listType) {
     const li = document.createElement("li");
     li.dataset.id = item.transaction_id;
     li.innerHTML = `
-      <div class="logo">${item.icon ?? "💰"}</div>
+      <div class="logo">${item.icon ?? "💸"}</div>
       <span class="delete-item" id="delete-item">Del</span>
       <span class="transaction-title">${item.name}</span>
       <span class="amount ${amountClass}">${sign}$${Number(item.amount).toLocaleString()}</span>
     `;
-    li.querySelector(".delete-item").addEventListener("click", () => deleteData(item.transaction_id));
+        li.querySelector(".delete-item").addEventListener("click", () => deleteData(item.transaction_id));
     ul.appendChild(li);
   });
 }
 
+// ─── Error display ───────────────────────────────────────────
 function showError(message) {
-  disablePage.classList.remove("hidden");
-  document.body.style.overflow = "hidden";
-  failureText.innerText = message;
+  // disablePage.classList.remove("hidden");
+  // document.body.style.overflow = "hidden";
+  // failureText.innerText = message;
+  console.error("Error:", message);
 }
 
+// ─── Chart ───────────────────────────────────────────────────
 function renderCategoryChart(transactions, id) {
   const ctx = document.getElementById(id).getContext("2d");
 
@@ -153,15 +157,7 @@ function renderCategoryChart(transactions, id) {
     chartInstance.destroy();
   }
 
-  const isExpense = id.startsWith("expense");
-  const filtered = transactions.filter(
-    (t) => t.type === (isExpense ? "expense" : "income"),
-  );
-  const label = isExpense ? "Spending by category" : "Income by category";
-  const color = isExpense
-    ? "rgba(248, 113, 113, 0.75)"
-    : "rgba(74, 222, 128, 0.75)";
-  const borderColor = isExpense ? "#f87171" : "#4ade80";
+  const filtered = transactions.filter((t) => t.type === "expense");
 
   const categoryTotals = filtered.reduce((acc, t) => {
     acc[t.name] = (acc[t.name] || 0) + Number(t.amount);
@@ -174,10 +170,10 @@ function renderCategoryChart(transactions, id) {
       labels: Object.keys(categoryTotals),
       datasets: [
         {
-          label,
+          label: "Spending by category",
           data: Object.values(categoryTotals),
-          backgroundColor: color,
-          borderColor: borderColor,
+          backgroundColor: "rgba(248, 113, 113, 0.75)",
+          borderColor: "#f87171",
           borderWidth: 1,
           borderRadius: 6,
         },
@@ -197,17 +193,34 @@ function renderCategoryChart(transactions, id) {
       scales: {
         x: {
           ticks: { color: "rgba(148, 185, 220, 0.5)" },
-          grid: { color: "rgba(56, 189, 248, 0.06)" },
+          grid: { color: "rgba(248, 113, 113, 0.06)" },
         },
         y: {
           ticks: { color: "rgba(148, 185, 220, 0.5)" },
-          grid: { color: "rgba(56, 189, 248, 0.06)" },
+          grid: { color: "rgba(248, 113, 113, 0.06)" },
         },
       },
     },
   });
 }
 
+// ─── Download CSV ─────────────────────────────────────────────
+document.getElementById("download-btn").addEventListener("click", () => {
+  const expenses = transactions.filter((t) => t.type === "expense");
+  if (expenses.length === 0) return;
+  const header = "Name,Amount,Date";
+  const rows = expenses.map((e) => `"${e.name}",${e.amount},${e.date ?? ""}`);
+  const csv = [header, ...rows].join("\n");
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "expenses.csv";
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+// ─── Init ────────────────────────────────────────────────────
 if (!token) {
   window.location.href = "../login/index.html";
 } else {

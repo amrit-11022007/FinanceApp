@@ -115,7 +115,7 @@ export const authMe = async (req, res) => {
 export const transactionData = async (req, res) => {
   try {
     const [rows] = await pool.query(
-      `SELECT u.user_id, t.category_id, t.amount, t.type, t.date, c.name, c.icon 
+      `SELECT u.user_id,t.transaction_id, t.category_id, t.amount, t.type, t.date, c.name, c.icon 
        FROM transactions t 
        INNER JOIN categories c ON t.category_id = c.category_id 
        INNER JOIN users u ON t.user_id = u.user_id 
@@ -132,6 +132,7 @@ export const addTransaction = async (req, res) => {
   try {
     const { amount, date, type } = req.body;
     let categoryId = null;
+    let transactionType = "";
     switch (type) {
       case "salary":
         categoryId = 1;
@@ -139,19 +140,62 @@ export const addTransaction = async (req, res) => {
       case "freelance":
         categoryId = 2;
         break;
-      case "other":
+      case "other income":
         categoryId = 3;
+        break;
+      case "food":
+        categoryId = 4;
+        break;
+      case "transport":
+        categoryId = 5;
+        break;
+      case "housing":
+        categoryId = 6;
+        break;
+      case "health":
+        categoryId = 7;
+        break;
+      case "entertainment":
+        categoryId = 8;
+        break;
+      case "shopping":
+        categoryId = 9;
+        break;
+      case "education":
+        categoryId = 10;
+        break;
+      case "other expenses":
+        categoryId = 11;
         break;
     
       default:
         break;
     }
+    if (categoryId <= 3) transactionType = "income";
+    else transactionType = "expense";
+
+    console.log({ categoryId, amount, date, type });
 
     await pool.query(
-      'INSERT INTO transactions (user_id, category_id, amount, date) VALUES (?, ?, ?, ?)',
-      [req.user.user_id, categoryId, amount, date]
+      'INSERT INTO transactions (user_id, category_id, amount, type, date) VALUES (?, ?, ?, ?, ?)',
+      [req.user.user_id, categoryId, amount, transactionType, date]
     );
     res.json({ success: true, message: "Transaction added succesfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+}
+
+export const deleteTransaction = async (req, res) => {
+  try {
+    const {id} = req.params;
+    const userId = req.user.user_id;
+
+    const [result] = await pool.query(
+      'DELETE FROM transactions WHERE transaction_id = ? AND user_id = ?', [id, userId]
+    );
+    res.json({ success: true, message: "Transaction deleted successfully" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Server error" });
