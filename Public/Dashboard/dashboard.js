@@ -7,6 +7,7 @@ const failureText = document.getElementById("failureId");
 
 let userName = "";
 let userEmail = "";
+let currency = "USD";
 let transactions = [];
 
 // ─── Hamburger toggle ────────────────────────────────────────
@@ -31,6 +32,7 @@ document.getElementById("manage-profile").addEventListener("click", () => {
   window.location.href = "../Settings/setting.html"
 });
 
+
 // ─── Chart.js global dark defaults ──────────────────────────
 Chart.defaults.color = "rgba(148, 185, 220, 0.6)";
 Chart.defaults.borderColor = "rgba(56, 189, 248, 0.1)";
@@ -54,6 +56,7 @@ async function getData() {
       );
     userName = data.name;
     userEmail = data.email;
+    currency = data.currency || "USD";
     profileIcon.innerText = userName[0].toUpperCase();
     renderProfile(userName, userEmail);
   } catch (err) {
@@ -104,14 +107,14 @@ function renderList(ulId, transactions, listType) {
 
   arr.forEach((item) => {
     const isExpense = item.type === "expense";
-    const sign = isExpense ? "−" : "+";
+    const sign = isExpense ? "-" : "+";
     const amountClass = isExpense ? "amount-expense" : "amount-income";
 
     const li = document.createElement("li");
     li.innerHTML = `
       <div class="logo">${item.icon ?? "💰"}</div>
       <span class="transaction-title">${item.name}</span>
-      <span class="amount ${amountClass}">${sign}$${Number(item.amount).toLocaleString()}</span>
+      <span class="amount ${amountClass}">${sign}${`${formatAmount(item.amount)}`}</span>
     `;
     ul.appendChild(li);
   });
@@ -122,14 +125,14 @@ function renderTotalIncome(transactions) {
   const total = transactions
     .filter((t) => t.type === "income")
     .reduce((acc, t) => acc + Number(t.amount), 0);
-  document.getElementById("total-income").innerText = total.toLocaleString();
+  document.getElementById("total-income").innerText = formatAmount(total);
 }
 
 function renderTotalExpenses(transactions) {
   const total = transactions
     .filter((t) => t.type === "expense")
     .reduce((acc, t) => acc + Number(t.amount), 0);
-  document.getElementById("total-expense").innerText = total.toLocaleString();
+  document.getElementById("total-expense").innerText = formatAmount(total);
 }
 
 function renderTotalSavings(transactions) {
@@ -139,9 +142,7 @@ function renderTotalSavings(transactions) {
   const expenses = transactions
     .filter((t) => t.type === "expense")
     .reduce((acc, t) => acc + Number(t.amount), 0);
-  document.getElementById("total-saving").innerText = (
-    income - expenses
-  ).toLocaleString();
+  document.getElementById("total-saving").innerText = formatAmount(income - expenses);
 }
 
 // ─── Pie chart ───────────────────────────────────────────────
@@ -253,6 +254,14 @@ function showError(message) {
   disablePage.classList.remove("hidden");
   document.body.style.overflow = "hidden";
   failureText.innerText = message;
+}
+
+function formatAmount(amount) {
+  return Number(amount).toLocaleString('en-US', {
+    style: 'currency',
+    currency: currency,         // uses the variable fetched from /me
+    maximumFractionDigits: 2,
+  });
 }
 
 // ─── Init ────────────────────────────────────────────────────

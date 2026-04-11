@@ -3,9 +3,9 @@ user_id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
 name VARCHAR(100) NOT NULL,
 email VARCHAR(100) NOT NULL UNIQUE,
 password VARCHAR(255) NOT NULL,
-created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+currency VARCHAR(10) DEFAULT 'USD'
 );
-
 
 CREATE TABLE categories (
   category_id  INT AUTO_INCREMENT PRIMARY KEY,
@@ -56,4 +56,3 @@ INSERT INTO categories (user_id, name, type, icon) VALUES
   (NULL, 'Shopping',      'expense', '🛍️'),
   (NULL, 'Education',     'expense', '📚'),
   (NULL, 'Other Expense', 'expense', '📦');
-

@@ -12,6 +12,7 @@ let chartInstance = null;
 
 let userName = "";
 let userEmail = "";
+let currency = "USD";
 
 // ─── Hamburger ───────────────────────────────────────────────
 document
@@ -63,6 +64,7 @@ async function getData() {
       );
     userName = data.name;
     userEmail = data.email;
+    currency = data.currency || "USD";
     profileIcon.innerText = userName[0].toUpperCase();
     renderProfile(userName, userEmail)
   } catch (err) {
@@ -153,9 +155,9 @@ function renderList(ulId, transactions, listType) {
     li.dataset.id = item.transaction_id;
     li.innerHTML = `
       <div class="logo">${item.icon ?? "💸"}</div>
-      <span class="delete-item" id="delete-item">Del</span>
+      <span class="delete-item" id="delete-item">🗑️</span>
       <span class="transaction-title">${item.name}</span>
-      <span class="amount ${amountClass}">${sign}$${Number(item.amount).toLocaleString()}</span>
+      <span class="amount ${amountClass}">${sign}${formatAmount(item.amount)}</span>
     `;
         li.querySelector(".delete-item").addEventListener("click", () => deleteData(item.transaction_id));
     ul.appendChild(li);
@@ -240,6 +242,14 @@ document.getElementById("download-btn").addEventListener("click", () => {
   a.click();
   URL.revokeObjectURL(url);
 });
+
+function formatAmount(amount) {
+  return Number(amount).toLocaleString('en-US', {
+    style: 'currency',
+    currency: currency,         // uses the variable fetched from /me
+    maximumFractionDigits: 2,
+  });
+}
 
 // ─── Init ────────────────────────────────────────────────────
 if (!token) {

@@ -2,7 +2,6 @@ import mysql from "mysql2/promise";
 import bcrypt from "bcrypt";
 import { loginSchema, registerSchema } from "./authValidator.js";
 import jwt from "jsonwebtoken";
-import { success } from "zod";
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
@@ -100,7 +99,7 @@ export const authRegister = async (req, res) => {
 export const authMe = async (req, res) => {
   try {
     const [rows] = await pool.query(
-      "SELECT user_id, name, email FROM users WHERE user_id = ?",
+      "SELECT user_id, name, email, currency FROM users WHERE user_id = ?",
       [req.user.user_id],
     );
     if (!rows[0]) {
@@ -244,5 +243,24 @@ export const deleteAllTransaction = async (req, res) => {
     res.json({ success: true, message: "Done" });
   } catch (err) {
     res.status(500).json({ error: "Server error" });
+  }
+};
+
+export const changeCurrency = async (req, res) => {
+  const { currency } = req.body;
+
+  const allowed = ['INR', 'USD', 'EUR', 'GBP'];
+  if (!allowed.includes(currency)) {
+    return res.status(400).json({ error: 'Invalid currency' });
+  }
+
+  try {
+    await pool.execute(
+      'UPDATE users SET currency = ? WHERE user_id = ?',
+      [currency, req.user.user_id]
+    );
+    res.json({ success: true, currency });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };

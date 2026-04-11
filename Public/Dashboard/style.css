@@ -239,9 +239,9 @@ nav > span:first-child:hover { color: var(--accent); }
   display: block;
 }
 
-.expense-summary .amount::before {
+.expense-summary .money-symbol {
   content: '$';
-  font-size: 14px;
+  font-size: 34px;
   color: var(--accent);
   margin-right: 4px;
   vertical-align: middle;
