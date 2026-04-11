@@ -1,3 +1,5 @@
+import { renderProfile } from "../tools/render.js";
+
 const token = localStorage.getItem("token");
 const profileIcon = document.getElementById("dashboard-profile-icon");
 const disablePage = document.getElementById("overlay");
@@ -8,8 +10,25 @@ let userEmail = "";
 let transactions = [];
 
 // ─── Hamburger toggle ────────────────────────────────────────
-document.querySelector("nav > span:first-child").addEventListener("click", () => {
-  document.querySelector("nav").classList.toggle("nav-open");
+document
+  .querySelector("nav > span:first-child")
+  .addEventListener("click", () => {
+    document.querySelector("nav").classList.toggle("nav-open");
+  });
+
+profileIcon.addEventListener("click", () => {
+  document.querySelector(".profile").classList.remove("hidden");
+});
+
+document.getElementById("logout").addEventListener("click", () => {
+  localStorage.removeItem(token);
+  window.location.href = "../login/index.html";
+});
+document.getElementById("close").addEventListener("click", () => {
+  document.querySelector(".profile").classList.add("hidden");
+});
+document.getElementById("manage-profile").addEventListener("click", () => {
+  window.location.href = "../Settings/setting.html"
 });
 
 // ─── Chart.js global dark defaults ──────────────────────────
@@ -29,10 +48,14 @@ async function getData() {
       },
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.message || data.error || "Failed to fetch user data");
+    if (!res.ok)
+      throw new Error(
+        data.message || data.error || "Failed to fetch user data",
+      );
     userName = data.name;
     userEmail = data.email;
     profileIcon.innerText = userName[0].toUpperCase();
+    renderProfile(userName, userEmail);
   } catch (err) {
     showError(err.message || err);
   }
@@ -49,7 +72,10 @@ async function getTransactionData() {
       },
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.message || data.error || "Failed to fetch transactions");
+    if (!res.ok)
+      throw new Error(
+        data.message || data.error || "Failed to fetch transactions",
+      );
     transactions = data;
     renderList("transaction-list", transactions, "all");
     renderList("expense-list", transactions, "expense");
@@ -71,8 +97,10 @@ function renderList(ulId, transactions, listType) {
   ul.innerHTML = "";
 
   let arr = transactions;
-  if (listType === "expense") arr = transactions.filter((t) => t.type === "expense");
-  else if (listType === "income") arr = transactions.filter((t) => t.type === "income");
+  if (listType === "expense")
+    arr = transactions.filter((t) => t.type === "expense");
+  else if (listType === "income")
+    arr = transactions.filter((t) => t.type === "income");
 
   arr.forEach((item) => {
     const isExpense = item.type === "expense";
@@ -111,7 +139,9 @@ function renderTotalSavings(transactions) {
   const expenses = transactions
     .filter((t) => t.type === "expense")
     .reduce((acc, t) => acc + Number(t.amount), 0);
-  document.getElementById("total-saving").innerText = (income - expenses).toLocaleString();
+  document.getElementById("total-saving").innerText = (
+    income - expenses
+  ).toLocaleString();
 }
 
 // ─── Pie chart ───────────────────────────────────────────────
@@ -134,12 +164,14 @@ function renderPieChart(transactions) {
       type: "pie",
       data: {
         labels: ["Expense", "Saving"],
-        datasets: [{
-          data: [expense, saving],
-          backgroundColor: ["#f87171", "#4ade80"],
-          borderColor: "rgba(10, 22, 40, 0.8)",
-          borderWidth: 2,
-        }],
+        datasets: [
+          {
+            data: [expense, saving],
+            backgroundColor: ["#f87171", "#4ade80"],
+            borderColor: "rgba(10, 22, 40, 0.8)",
+            borderWidth: 2,
+          },
+        ],
       },
       options: {
         responsive: true,
@@ -155,16 +187,20 @@ function renderPieChart(transactions) {
           },
         },
       },
-    }
+    },
   );
 }
 
 // ─── Bar chart ───────────────────────────────────────────────
 function renderCategoryChart(transactions, id) {
   const isExpense = id.startsWith("expense");
-  const filtered = transactions.filter((t) => t.type === (isExpense ? "expense" : "income"));
+  const filtered = transactions.filter(
+    (t) => t.type === (isExpense ? "expense" : "income"),
+  );
   const label = isExpense ? "Spending by category" : "Income by category";
-  const color = isExpense ? "rgba(248, 113, 113, 0.75)" : "rgba(74, 222, 128, 0.75)";
+  const color = isExpense
+    ? "rgba(248, 113, 113, 0.75)"
+    : "rgba(74, 222, 128, 0.75)";
   const borderColor = isExpense ? "#f87171" : "#4ade80";
 
   const categoryTotals = filtered.reduce((acc, t) => {
@@ -176,14 +212,16 @@ function renderCategoryChart(transactions, id) {
     type: "bar",
     data: {
       labels: Object.keys(categoryTotals),
-      datasets: [{
-        label,
-        data: Object.values(categoryTotals),
-        backgroundColor: color,
-        borderColor: borderColor,
-        borderWidth: 1,
-        borderRadius: 6,
-      }],
+      datasets: [
+        {
+          label,
+          data: Object.values(categoryTotals),
+          backgroundColor: color,
+          borderColor: borderColor,
+          borderWidth: 1,
+          borderRadius: 6,
+        },
+      ],
     },
     options: {
       responsive: true,

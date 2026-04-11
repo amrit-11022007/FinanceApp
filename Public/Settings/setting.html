@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings — FinTrac</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="../styles/profile.css">
+  </head>
+  <body>
+    <nav>
+      <span>&#8801;</span>
+      <span class="logo">FinTrac</span>
+      <ul class="nav-list">
+        <li><a href="../Dashboard/dashboard.html">Dashboard</a></li>
+        <li><a href="../Income/income.html">Income</a></li>
+        <li><a href="../Expense/expense.html">Expenses</a></li>
+        <li><a href="#" class="active">Settings</a></li>
+      </ul>
+      <button type="button" class="circular-profile" id="dashboard-profile-icon">F</button>
+    </nav>
+
+    <div class="container">
+
+      <!-- ── Profile settings ── -->
+      <section class="settings-section">
+        <header class="section-header">
+          <span class="header-text">Profile</span>
+          <span class="section-sub">Manage your personal details</span>
+        </header>
+
+        <ul class="settings-list">
+          <li class="settings-item">
+            <div class="item-info">
+              <span class="item-label">Name</span>
+              <span class="item-value" id="display-name">—</span>
+            </div>
+            <button class="change-btn" data-modal="change-name-dialogue-box">Change</button>
+          </li>
+          <li class="settings-item">
+            <div class="item-info">
+              <span class="item-label">Email</span>
+              <span class="item-value" id="display-email">—</span>
+            </div>
+            <button class="change-btn" data-modal="change-email-dialogue-box">Change</button>
+          </li>
+          <li class="settings-item">
+            <div class="item-info">
+              <span class="item-label">Password</span>
+              <span class="item-value">••••••••</span>
+            </div>
+            <button class="change-btn" data-modal="change-password-dialogue-box">Change</button>
+          </li>
+        </ul>
+      </section>
+
+      <!-- ── Currency settings ── -->
+      <section class="settings-section">
+        <header class="section-header">
+          <span class="header-text">Currency</span>
+          <span class="section-sub">Choose your preferred currency</span>
+        </header>
+
+        <ul class="currency-list">
+          <li>
+            <label class="currency-option">
+              <input type="radio" name="currency" value="INR" id="rupee" />
+              <span class="currency-card">
+                <span class="currency-symbol">₹</span>
+                <span class="currency-name">Indian Rupee</span>
+                <span class="currency-code">INR</span>
+              </span>
+            </label>
+          </li>
+          <li>
+            <label class="currency-option">
+              <input type="radio" name="currency" value="USD" id="dollar" />
+              <span class="currency-card">
+                <span class="currency-symbol">$</span>
+                <span class="currency-name">US Dollar</span>
+                <span class="currency-code">USD</span>
+              </span>
+            </label>
+          </li>
+          <li>
+            <label class="currency-option">
+              <input type="radio" name="currency" value="EUR" id="euro" />
+              <span class="currency-card">
+                <span class="currency-symbol">€</span>
+                <span class="currency-name">Euro</span>
+                <span class="currency-code">EUR</span>
+              </span>
+            </label>
+          </li>
+          <li>
+            <label class="currency-option">
+              <input type="radio" name="currency" value="GBP" id="gbp" />
+              <span class="currency-card">
+                <span class="currency-symbol">£</span>
+                <span class="currency-name">British Pound</span>
+                <span class="currency-code">GBP</span>
+              </span>
+            </label>
+          </li>
+        </ul>
+      </section>
+
+      <!-- ── Danger zone ── -->
+      <section class="settings-section danger-section">
+        <header class="section-header">
+          <span class="header-text danger-text">Danger Zone</span>
+          <span class="section-sub">Irreversible actions — proceed with caution</span>
+        </header>
+        <div class="danger-row">
+          <div class="item-info">
+            <span class="item-label">Reset all data</span>
+            <span class="item-value">Permanently deletes all your transactions</span>
+          </div>
+          <button class="reset-btn" id="reset-btn">Reset Data</button>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ── Modals ── -->
+    <div class="dialogue-box" id="change-name-dialogue-box">
+      <div class="dialogue-content">
+        <h2>Change Name</h2>
+        <form id="change-name-form">
+          <label for="current-name">Current Name</label>
+          <input type="text" id="current-name" placeholder="Current name" required />
+          <label for="new-name">New Name</label>
+          <input type="text" id="new-name" placeholder="New name" required />
+          <button type="submit" class="submit-btn">Update Name</button>
+          <button type="button" class="cancel-btn">Cancel</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="dialogue-box" id="change-email-dialogue-box">
+      <div class="dialogue-content">
+        <h2>Change Email</h2>
+        <form id="change-email-form">
+          <label for="current-email">Current Email</label>
+          <input type="email" id="current-email" placeholder="Current email" required />
+          <label for="new-email">New Email</label>
+          <input type="email" id="new-email" placeholder="New email" required />
+          <button type="submit" class="submit-btn">Update Email</button>
+          <button type="button" class="cancel-btn">Cancel</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="dialogue-box" id="change-password-dialogue-box">
+      <div class="dialogue-content">
+        <h2>Change Password</h2>
+        <form id="change-password-form">
+          <label for="current-password">Current Password</label>
+          <input type="password" id="current-password" placeholder="••••••••" required />
+          <label for="new-password">New Password</label>
+          <input type="password" id="new-password" placeholder="••••••••" required />
+          <button type="submit" class="submit-btn">Update Password</button>
+          <button type="button" class="cancel-btn">Cancel</button>
+        </form>
+      </div>
+    </div>
+<div class="profile hidden" id="profile">
+      <div class="profile-content">
+        <h2>Name: <span id="profile-name"></span></h2>
+        <p>Email: <span id="profile-email"></span></p>
+        <div class="profile-buttons">
+          <button id="manage-profile">Manage Profile</button>
+          <button id="logout">Logout</button>
+          <button id="close">close</button>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="setting.js"></script>
+  </body>
+</html>

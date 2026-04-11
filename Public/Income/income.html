@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Income</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="../styles/profile.css">
   </head>
   <body>
     <nav>
@@ -14,7 +15,7 @@
         <li><a href="../Dashboard/dashboard.html">Dashboard</a></li>
         <li><a href="../Income/income.html" class="active">Income</a></li>
         <li><a href="../Expense/expense.html">Expenses</a></li>
-        <li><a href="../Settings/settings.html">Settings</a></li>
+        <li><a href="../Settings/setting.html">Settings</a></li>
       </ul>
       <button class="circular-profile" id="dashboard-profile-icon">F</button>
     </nav>
@@ -63,7 +64,18 @@
         <span>Try Again Later</span>
       </div>
     </div>
+    <div class="profile hidden" id="profile">
+      <div class="profile-content">
+        <h2>Name: <span id="profile-name"></span></h2>
+        <p>Email: <span id="profile-email"></span></p>
+        <div class="profile-buttons">
+          <button id="manage-profile">Manage Profile</button>
+          <button id="logout">Logout</button>
+          <button id="close">close</button>
+        </div>
+      </div>
+    </div>
   </body>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="income.js"></script>
+  <script type="module" src="income.js"></script>
 </html>

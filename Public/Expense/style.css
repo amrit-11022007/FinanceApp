@@ -186,7 +186,6 @@ body > div:not(.expense-dialogue-box) {
 
 .expense-overview,
 .expense-source-list {
-  margin-left: var(--nav-width);
   padding: 32px 36px;
 }
 

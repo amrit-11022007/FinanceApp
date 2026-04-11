@@ -1,3 +1,5 @@
+import { renderProfile } from "../tools/render.js";
+
 const profileIcon = document.getElementById("expense-profile-icon");
 const token = localStorage.getItem("token");
 const form = document.getElementById("expense-form");
@@ -26,6 +28,21 @@ dialogueBox.addEventListener("click", (e) => {
   if (e.target === dialogueBox) dialogueBox.classList.remove("open");
 });
 
+profileIcon.addEventListener("click", () => {
+  document.querySelector(".profile").classList.remove("hidden");
+});
+
+document.getElementById("logout").addEventListener("click", () => {
+  localStorage.removeItem(token);
+  window.location.href = "../login/index.html";
+});
+document.getElementById("close").addEventListener("click", () => {
+  document.querySelector(".profile").classList.add("hidden");
+});
+document.getElementById("manage-profile").addEventListener("click", () => {
+  window.location.href = "../Settings/setting.html"
+});
+
 // ─── Fetch user ──────────────────────────────────────────────
 async function getData() {
   try {
@@ -44,6 +61,7 @@ async function getData() {
     userName = data.name;
     userEmail = data.email;
     profileIcon.innerText = userName[0].toUpperCase();
+    renderProfile(userName, userEmail)
   } catch (err) {
     showError(err.message || err);
   }

@@ -1,3 +1,5 @@
+import { renderProfile } from "../tools/render.js";
+
 const profileIcon = document.getElementById("dashboard-profile-icon");
 const disablePage = document.getElementById("overlay");
 const failureText = document.getElementById("failureId");
@@ -16,6 +18,21 @@ document
   .addEventListener("click", () => {
     document.querySelector("nav").classList.toggle("nav-open");
   });
+
+profileIcon.addEventListener("click", () => {
+  document.querySelector(".profile").classList.remove("hidden");
+});
+
+document.getElementById("logout").addEventListener("click", () => {
+  localStorage.removeItem(token);
+  window.location.href = "../login/index.html";
+});
+document.getElementById("close").addEventListener("click", () => {
+  document.querySelector(".profile").classList.add("hidden");
+});
+document.getElementById("manage-profile").addEventListener("click", () => {
+  window.location.href = "../Settings/setting.html"
+});
 
 const dialogueBox = document.querySelector(".income-dailogue-box");
 const addBtn = document.querySelector(".add-income-btn");
@@ -45,6 +62,7 @@ async function getData() {
     userName = data.name;
     userEmail = data.email;
     profileIcon.innerText = userName[0].toUpperCase();
+    renderProfile(userName, userEmail)
   } catch (err) {
     showError(err.message || err);
   }
