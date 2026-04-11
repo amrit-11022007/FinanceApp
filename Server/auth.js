@@ -2,6 +2,7 @@ import mysql from "mysql2/promise";
 import bcrypt from "bcrypt";
 import { loginSchema, registerSchema } from "./authValidator.js";
 import jwt from "jsonwebtoken";
+import { success } from "zod";
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
@@ -99,8 +100,8 @@ export const authRegister = async (req, res) => {
 export const authMe = async (req, res) => {
   try {
     const [rows] = await pool.query(
-      "SELECT user_id, name, email FROM users WHERE email = ?",
-      [req.user.email]
+      "SELECT user_id, name, email FROM users WHERE user_id = ?",
+      [req.user.user_id],
     );
     if (!rows[0]) {
       return res.status(404).json({ error: "User not found" });
@@ -120,7 +121,7 @@ export const transactionData = async (req, res) => {
        INNER JOIN categories c ON t.category_id = c.category_id 
        INNER JOIN users u ON t.user_id = u.user_id 
        WHERE u.user_id = ?`,
-      [req.user.user_id]
+      [req.user.user_id],
     );
     res.json(rows);
   } catch (err) {
@@ -167,7 +168,7 @@ export const addTransaction = async (req, res) => {
       case "other expenses":
         categoryId = 11;
         break;
-    
+
       default:
         break;
     }
@@ -177,27 +178,71 @@ export const addTransaction = async (req, res) => {
     console.log({ categoryId, amount, date, type });
 
     await pool.query(
-      'INSERT INTO transactions (user_id, category_id, amount, type, date) VALUES (?, ?, ?, ?, ?)',
-      [req.user.user_id, categoryId, amount, transactionType, date]
+      "INSERT INTO transactions (user_id, category_id, amount, type, date) VALUES (?, ?, ?, ?, ?)",
+      [req.user.user_id, categoryId, amount, transactionType, date],
     );
     res.json({ success: true, message: "Transaction added succesfully" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Server error" });
   }
-}
+};
 
 export const deleteTransaction = async (req, res) => {
   try {
-    const {id} = req.params;
+    const { id } = req.params;
     const userId = req.user.user_id;
 
     const [result] = await pool.query(
-      'DELETE FROM transactions WHERE transaction_id = ? AND user_id = ?', [id, userId]
+      "DELETE FROM transactions WHERE transaction_id = ? AND user_id = ?",
+      [id, userId],
     );
     res.json({ success: true, message: "Transaction deleted successfully" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Server error" });
   }
-}
+};
+
+export const change = async (req, res) => {
+  try {
+    const { name, email, currentPassword } = req.body;
+    let values = [];
+    let updates = [];
+    if (name) {
+      updates.push("name = ?");
+      values.push(name);
+    }
+    if (email) {
+      updates.push("email = ?");
+      values.push(email);
+    }
+    if (currentPassword) {
+      const hashed = await bcrypt.hash(currentPassword, 10);
+      updates.push("password = ?");
+      values.push(hashed);
+    }
+    const [rows] = await pool.query(
+      `UPDATE users SET ${updates} WHERE user_id = ?`,
+      [values[0], req.user.user_id],
+    );
+    if (rows.affectedRows === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.json(rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+export const deleteAllTransaction = async (req, res) => {
+  try {
+    const [result] = await pool.query("DELETE FROM transactions WHERE user_id = ?", [
+      req.user.user_id
+    ]);
+    res.json({ success: true, message: "Done" });
+  } catch (err) {
+    res.status(500).json({ error: "Server error" });
+  }
+};

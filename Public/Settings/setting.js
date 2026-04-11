@@ -3,6 +3,9 @@ import {renderProfile} from '../tools/render.js'
 const token = localStorage.getItem("token");
 const profileIcon = document.getElementById("dashboard-profile-icon");
 
+const disablePage = document.getElementById("overlay");
+const failureText = document.getElementById("failureId");
+
 let userName = "";
 let userEmail = "";
 let userCurrency = "USD";
@@ -49,7 +52,7 @@ async function getData() {
     const savedRadio = document.querySelector(`input[name="currency"][value="${userCurrency}"]`);
     if (savedRadio) savedRadio.checked = true;
   } catch (err) {
-    console.error(err);
+    showError(err.message || err);
   }
 }
 
@@ -64,7 +67,7 @@ document.querySelectorAll('input[name="currency"]').forEach((radio) => {
         body: JSON.stringify({ currency }),
       });
     } catch (err) {
-      console.error("Failed to update currency:", err);
+      showError(err.message || err);
     }
   });
 });
@@ -94,7 +97,7 @@ document.getElementById("change-name-form").addEventListener("submit", async (e)
   e.preventDefault();
   const newName = document.getElementById("new-name").value.trim();
   try {
-    const res = await fetch("http://localhost:5000/me/name", {
+    const res = await fetch(`http://localhost:5000/me`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       body: JSON.stringify({ name: newName }),
@@ -106,7 +109,7 @@ document.getElementById("change-name-form").addEventListener("submit", async (e)
       document.getElementById("change-name-dialogue-box").classList.remove("open");
       e.target.reset();
     }
-  } catch (err) { console.error(err); }
+  } catch (err) { showError(err.message || err); }
 });
 
 // ─── Change email ─────────────────────────────────────────────
@@ -114,7 +117,7 @@ document.getElementById("change-email-form").addEventListener("submit", async (e
   e.preventDefault();
   const newEmail = document.getElementById("new-email").value.trim();
   try {
-    const res = await fetch("http://localhost:5000/me/email", {
+    const res = await fetch("http://localhost:5000/me", {
       method: "PATCH",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       body: JSON.stringify({ email: newEmail }),
@@ -125,7 +128,7 @@ document.getElementById("change-email-form").addEventListener("submit", async (e
       document.getElementById("change-email-dialogue-box").classList.remove("open");
       e.target.reset();
     }
-  } catch (err) { console.error(err); }
+  } catch (err) { showError(err.message || err); }
 });
 
 // ─── Change password ──────────────────────────────────────────
@@ -134,7 +137,7 @@ document.getElementById("change-password-form").addEventListener("submit", async
   const currentPassword = document.getElementById("current-password").value;
   const newPassword     = document.getElementById("new-password").value;
   try {
-    const res = await fetch("http://localhost:5000/me/password", {
+    const res = await fetch("http://localhost:5000/me", {
       method: "PATCH",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       body: JSON.stringify({ currentPassword, newPassword }),
@@ -143,13 +146,32 @@ document.getElementById("change-password-form").addEventListener("submit", async
       document.getElementById("change-password-dialogue-box").classList.remove("open");
       e.target.reset();
     }
-  } catch (err) { console.error(err); }
+  } catch (err) { showError(err.message || err); }
 });
 
+function showError(message) {
+  disablePage.classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+  failureText.innerText = message;
+}
+
 // ─── Reset data button (backend wired by you) ────────────────
-document.getElementById("reset-btn").addEventListener("click", () => {
-  // Placeholder — wire your DELETE /transactions/all or similar endpoint here
-  console.log("Reset triggered — wire your backend route here");
+document.getElementById("reset-btn").addEventListener("click", async () => {
+  try {
+    const res = await fetch("http://localhost:5000/me", {
+      method: 'DELETE',
+      headers : {Authorization: `Bearer ${token}`},
+    });
+    if (res.ok) {
+      alert("All transaction data has been reset.");
+      window.location.href = "../Income/income.html";
+    } else {
+      const data = await res.json();
+      throw new Error(data.message || "Failed to reset data");
+    }
+  } catch (err) {
+    showError(err.message || err);
+  }
 });
 
 // ─── Init ────────────────────────────────────────────────────

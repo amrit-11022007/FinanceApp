@@ -4,6 +4,9 @@ const profileIcon = document.getElementById("expense-profile-icon");
 const token = localStorage.getItem("token");
 const form = document.getElementById("expense-form");
 
+const disablePage = document.getElementById("overlay");
+const failureText = document.getElementById("failureId");
+
 let transactions = [];
 let chartInstance = null;
 
@@ -161,9 +164,9 @@ function renderList(ulId, transactions, listType) {
 
 // ─── Error display ───────────────────────────────────────────
 function showError(message) {
-  // disablePage.classList.remove("hidden");
-  // document.body.style.overflow = "hidden";
-  // failureText.innerText = message;
+  disablePage.classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+  failureText.innerText = message;
   console.error("Error:", message);
 }
 

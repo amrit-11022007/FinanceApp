@@ -2,7 +2,7 @@ import express from "express";
 import path from "path";
 import url from "url";
 import cors from "cors";
-import { authLogin, authRegister, authMe, transactionData, addTransaction, deleteTransaction } from "./auth.js";
+import { authLogin, authRegister, authMe, transactionData, addTransaction, deleteTransaction, change, deleteAllTransaction } from "./auth.js";
 import dotenv from "dotenv";
 import { requireAuth } from "./middleware.js";
 
@@ -24,6 +24,8 @@ app.get("/me", requireAuth, authMe);
 app.get("/transactions", requireAuth, transactionData);
 app.post("/transactions", requireAuth, addTransaction);
 app.delete("/transactions/:id", requireAuth, deleteTransaction);
+app.patch("/me", requireAuth, change);
+app.delete("/me", requireAuth, deleteAllTransaction)
 
 app.listen(PORT, () => {
   console.log(`Server is listening at http://localhost:${PORT}`);

@@ -75,8 +75,8 @@ nav {
   height: 100vh;
   background: var(--glass-bg);
   border-right: 1px solid var(--glass-border);
-  backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -443,8 +443,8 @@ nav > span:first-child:hover {
   position: fixed;
   inset: 0;
   background: rgba(2, 6, 23, 0.75);
-  backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
   z-index: 200;
   align-items: center;
   justify-content: center;
